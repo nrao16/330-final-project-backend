@@ -79,10 +79,10 @@ Total 3 weeks for project submission on June 18th.
     - Week 6 - 7 - Set up and install project with dependences, create basic structure of project, create user model and dao, create middleware, create login route and create jest tests for route.
         - [x] Set up Git project
         - [x] Create README
-        - [ ] Create express server
-        - [ ] Create package.json and install - `npm install`
-        - [ ] Test initial install by running project - `npm start`
-        - [ ] Create project structure with directories for daos, models, routes, middleware; create index.js
+        - [x] Create express server
+        - [x] Create package.json and install - `npm install`
+        - [x] Test initial install by running project - `npm start`
+        - [x] Create project structure with directories for daos, models, routes, middleware; create index.js
         - [ ] Create user model - email should be unique
         - [ ] user DAO
         - [ ] Create middleware with bearer token and role checking
