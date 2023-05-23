@@ -4,7 +4,7 @@ Final project for 330 course using nodejs/express/mongodb
 ## Scenario
 This is a continuation of the project theme that I submitted for my React course. 
 I would like users to be able to create lists of favorite books that are associated with their account (based on email address) and perform additions/deletions/updates to their favorite lists. In the UI the book lists were from the New York Times bestseller lists and users were able to favorite them to add them to a firebase db. 
-Since this is a backend project, only admins will be able to add/update/delete the books and authors, and users will only be able to get books and authors but have full CRUD access for their own favorite lists.
+Since this is a backend project, only admins will be able to add or update the books and authors, and users will only be able to get books and authors but have full CRUD access for their own favorite lists.
 ## Requirements
 In addition to the signup/login route, there will 3 additional routes to access the underlying mongodb collections.
  - A books route that will enable CRU operations on books along with their author information. Only users in admin role will be able to add/update books, all users will be able to get the full list of books or specific book by id. Books cannot be deleted since they may already be part of a user's favorites collection. 
@@ -36,7 +36,7 @@ In addition to the signup/login route, there will 3 additional routes to access 
         - Change Password `POST /login/password`
     - favorites (requires authentication)
         - Create a list of favorite books: `POST /favorites` - open to all users
-            - Takes an array of book _id values (duplicates are ignored). In case of any invalid book ids, nothing will be created and a 400 error will be returned. This list is associated with the user id from the jwt token and stored in their favorites collection.
+            - Takes an array of book _id values (duplicates are ignored). This list is associated with the user id from the jwt token and stored in their favorites collection. In case of any invalid book ids, nothing will be created and a 400 error will be returned. 
         - Get a specific list of favorite books: `GET /favorites/:id` - open to all users
             - Returns book and author details of all books associated with favorites _id.
             - Return a 404 if favorites _id is not associated with token user id. An admin user should be able to see any list of favorites.
@@ -49,7 +49,7 @@ In addition to the signup/login route, there will 3 additional routes to access 
             - return all favorite lists created by the user making the request if not an admin user. If an admin user, return all favorite lists in the DB.
     - books (requires authentication)
         - Create: `POST /books` - restricted to users in the admin role.
-        - Update a book: `PUT /books/:id` - restricted to users in the admin role. Message saying 'Not Found ' if no match on id
+        - Update a book: `PUT /books/:id` - restricted to users in the admin role.  400 error with message saying 'Book Id Not Found ' if no match on id.
         - Get a book: `GET /books/:id` - open to all users
             - Get specific book for given id. 400 error with message saying 'Book Id Not Found ' if no match on id.
         - Get all books: `GET /books` - open to all users
@@ -57,7 +57,7 @@ In addition to the signup/login route, there will 3 additional routes to access 
     - authors (requires authentication)
         - Update an author: `PUT /authors/:id` - restricted to users with the admin role
         - Get an author: `GET /authors/:id` - open to all users
-            - Get specific author for given id. 400 error with message saying 'Book Id Not Found ' if no match on id.
+            - Get specific author for given id. 400 error with message saying 'Author Id Not Found ' if no match on id.
         - Get all authors: `GET /authors` - open to all users
             - Get all author details - optionally by full or partial match on name.
 
