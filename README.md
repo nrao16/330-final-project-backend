@@ -83,12 +83,12 @@ In addition to the signup/login route, there will 3 additional routes to access 
         - [ ] Create package.json and install - `npm install`
         - [ ] Test initial install by running project - `npm start`
         - [ ] Create project structure with directories for daos, models, routes, middleware; create index.js
-        - [ ] Create user model
+        - [ ] Create user model - email should be unique
         - [ ] user DAO
         - [ ] Create login route
         - [ ] Create jest tests for login route - Valid signup, login, password update. Invalid signup (duplicate email), invalid login, invalid password update with 404 situations.
     - Week 2 - Create books and authors models, daos, routes, create jest tests for routes.
-        - [ ] Create book model with text indexes on title, genre, summary
+        - [ ] Create book model with text indexes on title, genre, summary. isbn should be unique.
         - [ ] Create book DAO
         - [ ] Create books route
         - [ ] Create jest tests for books route - Valid CRU based on roles. Unauthorized access to perform create and updates. 
