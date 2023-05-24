@@ -3,7 +3,7 @@ Final project for 330 course using nodejs/express/mongodb
 
 ## Scenario
 This is a continuation of the project theme that I submitted for my React course. 
-I would like users to be able to create lists of favorite books that are associated with their account (based on email address) and perform additions/deletions/updates to their favorite lists. In the UI the book lists were from the New York Times bestseller lists and users were able to favorite them to add them to a firebase db. 
+I would like users to be able to create lists of favorite books that are associated with their account (based on email address) and perform additions/deletions/updates to their favorite lists. In the UI, the book lists were from the New York Times bestseller lists and users were able to favorite them to add them to a firebase db. 
 Since this is a backend project, only admins will be able to add or update the books and authors, and users will only be able to get books and authors but have full CRUD access for their own favorite lists.
 ## Requirements
 In addition to the signup/login route, there will 3 additional routes to access the underlying mongodb collections.
@@ -111,4 +111,4 @@ Total 3 weeks for project submission on June 18th.
 ### Self Evaluation
 - What worked
 - What didn't work
-- Lesson learnt
+- Lessons learnt
