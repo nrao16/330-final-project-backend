@@ -83,11 +83,11 @@ Total 3 weeks for project submission on June 18th.
     - [x] Create package.json and install - `npm install`
     - [x] Test initial install by running project - `npm start`
     - [x] Create project structure with directories for daos, models, routes, middleware; create index.js
-    - [ ] Create user model - email should be unique
-    - [ ] user DAO
-    - [ ] Create middleware with bearer token and role checking
-    - [ ] Create login route
-    - [ ] Create postman project and test login route with Postman
+    - [x] Create user model - email should be unique
+    - [x] user DAO
+    - [x] Create middleware with bearer token and role checking
+    - [x] Create login route
+    - [x] Create postman project and test login route with Postman
     - [ ] Create jest tests for login route - Valid signup, login, password update. Invalid signup (duplicate email), invalid login, invalid password update with 404 situations.
 - Week 7 - 8 - Create books, authors, favorites models, daos, routes, create jest tests for routes.
     - [ ] Create book model with text indexes on title, genre, summary. isbn should be unique.
