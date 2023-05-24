@@ -76,38 +76,39 @@ In addition to the signup/login route, there will 3 additional routes to access 
 
 ### Tasks Timeline
 Total 3 weeks for project submission on June 18th.
-    - Week 6 - 7 - Set up and install project with dependences, create basic structure of project, create user model and dao, create middleware, create login route and create jest tests for route.
-        - [x] Set up Git project
-        - [x] Create README
-        - [x] Create express server
-        - [x] Create package.json and install - `npm install`
-        - [x] Test initial install by running project - `npm start`
-        - [x] Create project structure with directories for daos, models, routes, middleware; create index.js
-        - [ ] Create user model - email should be unique
-        - [ ] user DAO
-        - [ ] Create middleware with bearer token and role checking
-        - [ ] Create login route
-        - [ ] Create postman project and test login route with Postman
-        - [ ] Create jest tests for login route - Valid signup, login, password update. Invalid signup (duplicate email), invalid login, invalid password update with 404 situations.
-    - Week 7 - 8 - Create books, authors, favorites models, daos, routes, create jest tests for routes.
-        - [ ] Create book model with text indexes on title, genre, summary. isbn should be unique.
-        - [ ] Create book DAO
-        - [ ] Create author model with text index on name
-        - [ ] Create author DAO
-        - [ ] Create books route and test with Postman
-        - [ ] Create authors route and test with Postman
-        - [ ] Create favorite model
-        - [ ] Create favorite DAO
-        - [ ] Create favorites route and test with Postman
-        - [ ] Create jest tests for books route - Valid CRU based on roles. Unauthorized access to perform create and updates. 
-        - [ ] Submit prototype/proof of concept with all routes working with basic operations.
-    - Week 8 - 9 - create jest tests. Test overall project and prep for presentation.
-        - [ ] Create jest tests for authors route - Valid RU based on roles. Unauthorized access to perform updates.
-        - [ ] Create jest tests for favorites route - Valid CRUD based on roles. Unauthorized access to perform crud on other user's favorites except for admins. 
-        - [ ] Create slide show and practice demo.
-    - Week 9 - Submit and present  
-
-    ### Self Evaluation
-      - What worked
-      - What didn't work
-      - Lesson learnt
+- Week 6 - 7 - Set up and install project with dependences, create basic structure of project, create user model and dao, create middleware, create login route and create jest tests for route.
+    - [x] Set up Git project
+    - [x] Create README
+    - [x] Create express server
+    - [x] Create package.json and install - `npm install`
+    - [x] Test initial install by running project - `npm start`
+    - [x] Create project structure with directories for daos, models, routes, middleware; create index.js
+    - [ ] Create user model - email should be unique
+    - [ ] user DAO
+    - [ ] Create middleware with bearer token and role checking
+    - [ ] Create login route
+    - [ ] Create postman project and test login route with Postman
+    - [ ] Create jest tests for login route - Valid signup, login, password update. Invalid signup (duplicate email), invalid login, invalid password update with 404 situations.
+- Week 7 - 8 - Create books, authors, favorites models, daos, routes, create jest tests for routes.
+    - [ ] Create book model with text indexes on title, genre, summary. isbn should be unique.
+    - [ ] Create book DAO
+    - [ ] Create author model with text index on name
+    - [ ] Create author DAO
+    - [ ] Create books route and test with Postman
+    - [ ] Create authors route and test with Postman
+    - [ ] Create favorite model
+    - [ ] Create favorite DAO
+    - [ ] Create favorites route and test with Postman
+    - [ ] Create jest tests for books route - Valid CRU based on roles. Unauthorized access to perform create and updates. 
+    - [ ] Submit prototype/proof of concept with all routes working with basic operations.
+- Week 8 - 9 - create jest tests. Test overall project and prep for presentation.
+    - [ ] Create jest tests for authors route - Valid RU based on roles. Unauthorized access to perform updates.
+    - [ ] Create jest tests for favorites route - Valid CRUD based on roles. Unauthorized access to perform crud on other user's favorites except for admins. 
+    - [ ] Create slide show and practice demo.
+- Week 9 - Submit and present  
+    
+    
+### Self Evaluation
+- What worked
+- What didn't work
+- Lesson learnt
