@@ -88,14 +88,14 @@ Total 3 weeks for project submission on June 18th.
     - [x] Create middleware with bearer token and role checking
     - [x] Create login route
     - [x] Create postman project and test login route with Postman
-    - [ ] Create jest tests for login route - Valid signup, login, password update. Invalid signup (duplicate email), invalid login, invalid password update with 404 situations.
+    - [X] Create jest tests for login route - Valid signup, login, password update. Invalid signup (duplicate email), invalid login, invalid password update with 401 situations.
 - Week 7 - 8 - Create books, authors, favorites models, daos, routes, create jest tests for routes.
-    - [ ] Create book model with text indexes on title, genre, summary. isbn should be unique.
-    - [ ] Create book DAO
-    - [ ] Create author model with text index on name
-    - [ ] Create author DAO
-    - [ ] Create books route and test with Postman
-    - [ ] Create authors route and test with Postman
+    - [x] Create book model with text indexes on title, genre, summary. isbn should be unique.
+    - [] Create book DAO
+    - [x] Create author model with text index on name
+    - [x] Create author DAO
+    - [x] Create books route and test with Postman
+    - [x] Create authors route and test with Postman
     - [ ] Create favorite model
     - [ ] Create favorite DAO
     - [ ] Create favorites route and test with Postman

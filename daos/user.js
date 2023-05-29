@@ -13,15 +13,5 @@ module.exports.updateUserPassword = (userId, password) => {
 }
 
 module.exports.createUser = (userObj) => {
-    try {
         return User.create(userObj);
-    } catch (e) {
-        if (e.message.includes('validation failed') || e.message.includes('dup key')) {
-            throw new BadDataError(e.message);
-        }
-        throw e;
-    }
 }
-
-class BadDataError extends Error { };
-module.exports.BadDataError = BadDataError;

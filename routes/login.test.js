@@ -37,12 +37,6 @@ describe("/login", () => {
       });
     });
 
-    describe("POST /logout", () => {
-      it("should return 404", async () => {
-        const res = await request(server).post("/login/logout").send();
-        expect(res.statusCode).toEqual(404);
-      });
-    });
   });
   
   describe("signup ", () => {

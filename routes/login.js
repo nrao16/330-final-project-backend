@@ -70,7 +70,7 @@ router.post("/password", isAuthorized, async (req, res, next) => {
             if (updatedUser.matchedCount > 0) {
                 res.status(200).send('Password updated');
             } else {
-                res.json(updatedUser);
+                res.status(401).send();
             }
         } catch (e) {
             next(e);
