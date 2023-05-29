@@ -2,22 +2,37 @@ const mongoose = require('mongoose');
 
 const Book = require('../models/book');
 const Author = require('../models/author');
+const { search } = require('../routes/login');
 
 module.exports = {};
 
-// get all books optionally with search term - including author info
+// get all books optionally with search term - author details are included in response
 module.exports.getAll = (searchText, page, perPage) => {
-    // search in text index
-    if (searchText) {
-        return Book.find({
-            $text: { $search: searchText }
-        },
-            { score: { $meta: 'textScore' } }
-        ).sort({ score: { $meta: 'textScore' } }).limit(perPage).skip(perPage * page).lean();
 
-    }
-    return Book.aggregate(
-        [
+    if (!searchText) {
+        return Book.aggregate(
+            [
+                {
+                    $lookup: {
+                        from: 'authors',
+                        localField: 'authorId',
+                        foreignField: '_id',
+                        as: 'author'
+                    }
+                },
+                { $project: { 'author.__v': 0, '__v': 0 } }
+            ]).limit(perPage).skip(perPage * page);
+    } 
+    // no search text so return all books
+    else {
+        return Book.aggregate(
+            [{
+                $match: {
+                    $text: {
+                        $search: searchText
+                    }
+                }
+            },
             {
                 $lookup: {
                     from: 'authors',
@@ -27,7 +42,8 @@ module.exports.getAll = (searchText, page, perPage) => {
                 }
             },
             { $project: { 'author.__v': 0, '__v': 0 } }
-        ]).limit(perPage).skip(perPage * page);
+            ]);
+    }
 }
 
 // get a single book by id including author info

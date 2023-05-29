@@ -6,5 +6,5 @@ const authorSchema = new mongoose.Schema({
   blurb: { type: String },
 });
 
-authorSchema.index({ name: 'text' });
+authorSchema.index({ name: 'text', blurb: 'text' });
 module.exports = mongoose.model("authors", authorSchema);

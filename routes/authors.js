@@ -6,21 +6,21 @@ const { isAuthorized, isAdmin } = require('./middleware/auth');
 
 router.use(isAuthorized);
 
-// Read - single author
+// Get single author for given author id
 router.get("/:id", async (req, res, next) => {
   try {
     const author = await authorDAO.getById(req.params.id);
     if (author) {
       res.json(author);
     } else {
-      res.sendStatus(404);
+      res.status(400).send(`Author Id ${req.params.id} not found.`);
     }
   } catch (e) {
     next(e);
   }
 });
 
-// Read - all authors
+// Get all authors
 router.get("/", async (req, res, next) => {
   try {
     let { search, page, perPage } = req.query;
@@ -33,19 +33,23 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-// Update
+// Update single author for given author id
 router.put("/:id", isAdmin, async (req, res, next) => {
-  const authorId = req.params.id;
-  const author = req.body;
-  if (!author || JSON.stringify(author) === '{}' || !author.name) {
-    res.status(400).send('author name is required"');
-  } else {
-    try {
+  try {
+    const authorId = req.params.id;
+    const author = req.body;
+    if (!author || JSON.stringify(author) === '{}') {
+      res.status(400).send('Update fields required.');
+    } else {
+      const authorExists = await authorDAO.getById(authorId);
+      if (!authorExists) {
+        res.status(400).send(`Author Id ${authorId} not found.`);
+      }
       const updatedAuthor = await authorDAO.updateById(authorId, author);
-      updatedAuthor ? res.json(`Author Id ${authorId} updated`) : res.status(400).send(`Author Id ${authorId} not found.`)
-    } catch (e) {
-      next(e);
+      updatedAuthor ? res.json(`Author Id ${authorId} updated`) : res.status(400).send(`Unable to update.`);
     }
+  } catch (e) {
+    next(e);
   }
 });
 
