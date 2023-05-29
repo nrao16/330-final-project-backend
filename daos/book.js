@@ -22,7 +22,7 @@ module.exports.getAll = (searchText, page, perPage) => {
                 },
                 { $project: { 'author.__v': 0, '__v': 0 } }
             ]).limit(perPage).skip(perPage * page);
-    } 
+    }
     // no search text so return all books
     else {
         return Book.aggregate(
@@ -68,6 +68,10 @@ module.exports.getById = (bookId) => {
         { $project: { 'author.__v': 0, '__v': 0 } }
         ]);
 }
+
+module.exports.getByListOfIds = async (bookIdList) => {
+    return await Book.find({ _id: { $in: bookIdList } }).lean();
+};
 
 module.exports.updateById = async (bookId, newObj) => {
     if (!mongoose.Types.ObjectId.isValid(bookId)) {

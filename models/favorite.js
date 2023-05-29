@@ -6,4 +6,4 @@ const favoriteSchema = new mongoose.Schema({
 });
 
 
-module.exports = mongoose.model("favorites", orderSchema);
+module.exports = mongoose.model("favorites", favoriteSchema);

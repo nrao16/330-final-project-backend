@@ -91,13 +91,13 @@ Total 3 weeks for project submission on June 18th.
     - [X] Create jest tests for login route - Valid signup, login, password update. Invalid signup (duplicate email), invalid login, invalid password update with 401 situations.
 - Week 7 - 8 - Create books, authors, favorites models, daos, routes, create jest tests for routes.
     - [x] Create book model with text indexes on title, genre, summary. isbn should be unique.
-    - [] Create book DAO
+    - [x] Create book DAO
     - [x] Create author model with text index on name
     - [x] Create author DAO
     - [x] Create books route and test with Postman
     - [x] Create authors route and test with Postman
-    - [ ] Create favorite model
-    - [ ] Create favorite DAO
+    - [x] Create favorite model
+    - [x] Create favorite DAO
     - [ ] Create favorites route and test with Postman
     - [ ] Create jest tests for books route - Valid CRU based on roles. Unauthorized access to perform create and updates. 
     - [ ] Submit prototype/proof of concept with all routes working with basic operations.

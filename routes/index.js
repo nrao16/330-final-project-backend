@@ -3,6 +3,7 @@ const router = Router();
 router.use("/login", require('./login'));
 router.use("/books", require('./books'));
 router.use("/authors", require('./authors'));
+router.use("/favorites", require('./favorites'));
 
 const { errorHandler } = require("./middleware/error");
 
