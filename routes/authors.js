@@ -42,7 +42,7 @@ router.put("/:id", isAdmin, async (req, res, next) => {
   } else {
     try {
       const updatedAuthor = await authorDAO.updateById(authorId, author);
-      updatedAuthor? res.json(`Author Id ${authorId} updated`) : res.status(400).send(`Author Id ${authorId} not found.`)
+      updatedAuthor ? res.json(`Author Id ${authorId} updated`) : res.status(400).send(`Author Id ${authorId} not found.`)
     } catch (e) {
       next(e);
     }
