@@ -32,6 +32,7 @@ module.exports.getById = async (favoriteId) => {
     }
     ]);
 
+    console.log(`favoriteWithBooks - ${JSON.stringify(favoriteWithBooks)}`)
     return favoriteWithBooks;
 }
 
@@ -125,21 +126,6 @@ module.exports.getAll = async () => {
     return favoritesWithBooksForUser;
 }
 
-module.exports.removeFavoriteByUserAndId = async (userId, favoriteId) => {
-    if (!mongoose.Types.ObjectId.isValid(favoriteId)) {
-        return null;
-    }
-    await Favorite.deleteOne({ _id: favoriteId, userId: userId });
-    return true;
-}
-
-module.exports.removeFavoriteById = async (favoriteId) => {
-    if (!mongoose.Types.ObjectId.isValid(favoriteId)) {
-        return null;
-    }
-    return await Favorite.deleteOne({ _id: favoriteId });
-}
-
 module.exports.updateById = async (favoriteId, newObj) => {
     if (!mongoose.Types.ObjectId.isValid(favoriteId)) {
         return false;
@@ -152,4 +138,18 @@ module.exports.updateByUserAndId = async (userId, favoriteId, newObj) => {
         return false;
     }
     return await Favorite.updateOne({ _id: favoriteId, userId: userId }, newObj);
+}
+
+module.exports.removeFavoriteByUserAndId = async (userId, favoriteId) => {
+    if (!mongoose.Types.ObjectId.isValid(favoriteId)) {
+        return null;
+    }
+    return await Favorite.deleteOne({ _id: favoriteId, userId: userId });
+}
+
+module.exports.removeFavoriteById = async (favoriteId) => {
+    if (!mongoose.Types.ObjectId.isValid(favoriteId)) {
+        return null;
+    }
+    return await Favorite.deleteOne({ _id: favoriteId });
 }

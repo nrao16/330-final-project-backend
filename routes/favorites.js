@@ -53,9 +53,11 @@ router.post("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
     try {
         let favorite = {};
+        // admin users can get any favorite collection
         if (req?.user?.roles?.includes('admin')) {
             favorite = await favoriteDAO.getById(req.params.id);
         } else {
+            // non admin users can only get their own favorites
             favorite = await favoriteDAO.getByUserAndId(req.user._id, req.params.id);
         }
         if (favorite[0]) {
@@ -73,9 +75,11 @@ router.get("/:id", async (req, res, next) => {
 router.get("/", async (req, res, next) => {
     try {
         let favorites = [];
+        // admin users can get any favorite collection
         if (req?.user?.roles?.includes('admin')) {
             favorites = await favoriteDAO.getAll();
         } else {
+            // non admin users can only get their own favorites
             favorites = await favoriteDAO.getAllByUserId(req.user._id);
         }
         res.json(favorites);
@@ -118,12 +122,19 @@ router.put("/:id", async (req, res, next) => {
             if (invalidIds.length == 0) {
                 const favoriteObj = { bookIds: favoriteBooks }
                 let updatedFavorite = {};
+                // admin users can update any favorite collection
                 if (req?.user?.roles?.includes('admin')) {
                     updatedFavorite = await favoriteDAO.updateById(favoriteId, favoriteObj);
                 } else {
+                    // non admin users can only update their own favorites
                     updatedFavorite = await favoriteDAO.updateByUserAndId(req.user._id, favoriteId, favoriteObj);
                 }
-                res.json(updatedFavorite);
+                console.log(`updatedFavorite - ${JSON.stringify(updatedFavorite)}`);
+                if (!updatedFavorite) {
+                    res.sendStatus(400);
+                } else {
+                    res.sendStatus(200);
+                }
             } else {
                 res.status(400).send(`Book id(s) ${JSON.stringify(invalidIds)} not found.`);
             }
@@ -138,19 +149,25 @@ router.delete("/:id", async (req, res, next) => {
     try {
         const favoriteId = req.params.id;
         const favoriteExists = await favoriteDAO.getById(favoriteId);
+        console.log(`favoriteExists-${favoriteExists}`);
         if (!favoriteExists) {
             res.status(400).send(`Favorite Id ${favoriteId} not found.`);
+            return;
         }
-        let favorite = {};
+        let deletedFavorite = {};
+        // admin users can delete any favorite collection
         if (req?.user?.roles?.includes('admin')) {
-            favorite = await favoriteDAO.removeFavoriteByID(req.params.id);
+            deletedFavorite = await favoriteDAO.removeFavoriteById(req.params.id);
         } else {
-            favorite = await favoriteDAO.removeFavoriteByUserAndId(req.user._id, req.params.id);
+            // non admin users can only delete their own favorites
+            deletedFavorite = await favoriteDAO.removeFavoriteByUserAndId(req.user._id, req.params.id);
         }
-        if (favorite) {
-            res.json(favorite);
-        } else {
+        console.log(`deletedFavorite - ${JSON.stringify(deletedFavorite)}`);
+
+        if (!deletedFavorite) {
             res.sendStatus(400);
+        } else {
+            res.sendStatus(200);
         }
     } catch (e) {
         console.log(e);
