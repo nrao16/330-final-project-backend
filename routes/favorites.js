@@ -84,5 +84,78 @@ router.get("/", async (req, res, next) => {
     }
 });
 
+// Update favorite for given favorite id 
+router.put("/:id", async (req, res, next) => {
+    try {
+        const favoriteId = req.params.id;
+        const favoriteExists = await favoriteDAO.getById(favoriteId);
+        if (!favoriteExists) {
+            res.status(400).send(`Favorite Id ${favoriteId} not found.`);
+        }
+
+        const favoriteBooks = req.body;
+        if (!favoriteBooks || !favoriteBooks.length === 0 ||
+            favoriteBooks.some(id => id === null)) {
+            res.status(400).send('Book id is required and has to be valid.');
+        } else {
+            // get book details, matching given favorite book ids
+            const matchedBooks = await bookDAO.getByListOfIds(favoriteBooks);
+            let matchedBooksMap = new Map();
+
+            // convert the matched books into a map before checking if all request ids were found
+            matchedBooks.forEach((book) => {
+                matchedBooksMap.set(book._id.toString(), book);
+            });
+
+            let invalidIds = [];
+            // for each book, get the corresponding matched book from map, if not found then add to invalid list
+            favoriteBooks.forEach(bookId => {
+                if (!matchedBooksMap.has(bookId)) {
+                    invalidIds.push(bookId);
+                }
+            });
+
+            if (invalidIds.length == 0) {
+                const favoriteObj = { bookIds: favoriteBooks }
+                let updatedFavorite = {};
+                if (req?.user?.roles?.includes('admin')) {
+                    updatedFavorite = await favoriteDAO.updateById(favoriteId, favoriteObj);
+                } else {
+                    updatedFavorite = await favoriteDAO.updateByUserAndId(req.user._id, favoriteId, favoriteObj);
+                }
+                res.json(updatedFavorite);
+            } else {
+                res.status(400).send(`Book id(s) ${JSON.stringify(invalidIds)} not found.`);
+            }
+        }
+    } catch (e) {
+        next(e);
+    }
+});
+
+// delete favorite for given favorite id
+router.delete("/:id", async (req, res, next) => {
+    try {
+        const favoriteId = req.params.id;
+        const favoriteExists = await favoriteDAO.getById(favoriteId);
+        if (!favoriteExists) {
+            res.status(400).send(`Favorite Id ${favoriteId} not found.`);
+        }
+        let favorite = {};
+        if (req?.user?.roles?.includes('admin')) {
+            favorite = await favoriteDAO.removeFavoriteByID(req.params.id);
+        } else {
+            favorite = await favoriteDAO.removeFavoriteByUserAndId(req.user._id, req.params.id);
+        }
+        if (favorite) {
+            res.json(favorite);
+        } else {
+            res.sendStatus(400);
+        }
+    } catch (e) {
+        console.log(e);
+        next(e);
+    }
+});
 
 module.exports = router;
