@@ -1,0 +1,1070 @@
+{
+	"info": {
+		"_postman_id": "f3febf50-1e6b-46fb-9369-eea3f3f25a22",
+		"name": "UW Node - final project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "login/password user 1 - wrong token",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDZkNWFhNDg0NDZlNTAxYzI5ZWJiOGIiLCJlbWFpbCI6Im15bmFtZUBhYmMuY29tIiwicm9sZXMiOlsidXNlciJdLCJpYXQiOjE2ODQ4ODgzNTl9.6Dt8Sw12z3N9BWwAuCHsc315rZi4q0X5RIPc8S3glrE",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\": \"111\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/login/password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login",
+						"password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login/password user 1 - authorized",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZDE4NGNjODM1Y2U3ZjI5NDJkZGMiLCJlbWFpbCI6InVzZXIxQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTY4NTMxMTkwM30.UchbhPz75g5C-cH_EMveZa5jyBWG7vZpm-wCS6hb1No",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\": \"111\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/login/password",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login",
+						"password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login user 1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDYxNjc5YzY4YzVjOTkzZmJlNTk2NzQiLCJlbWFpbCI6ImhlbGxvQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTY4NDEwNTE5OH0.VAn4Y4Q9W0KwBRzG2Nef-uLZaayzFCdIiIe1qfADmF4",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"user1@abc.com\",\r\n    \"password\": \"111\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login user 2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDYxNjc5YzY4YzVjOTkzZmJlNTk2NzQiLCJlbWFpbCI6ImhlbGxvQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTY4NDEwNTE5OH0.VAn4Y4Q9W0KwBRzG2Nef-uLZaayzFCdIiIe1qfADmF4",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"user2@abc.com\",\r\n    \"password\": \"456\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login admin user 3",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDYxNjc5YzY4YzVjOTkzZmJlNTk2NzQiLCJlbWFpbCI6ImhlbGxvQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTY4NDEwNTE5OH0.VAn4Y4Q9W0KwBRzG2Nef-uLZaayzFCdIiIe1qfADmF4",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"user3@abc.com\",\r\n    \"password\": \"999\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login/signup user 1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"user1@abc.com\",\r\n    \"password\": \"123\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/login/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login/signup user 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"user2@abc.com\",\r\n    \"password\": \"456\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/login/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login/signup admin user3",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"user3@abc.com\",\r\n    \"password\": \"999\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/login/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "books - add with admin user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZTYyYWI4YmUzYzJmZDYyNDg0YjUiLCJlbWFpbCI6InVzZXIzQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIiwiYWRtaW4iXSwiaWF0IjoxNjg1MzE3MjQzfQ.tUUr4Fu5WxlTUaO-88cVXnCJXeQZrsFsJ8VSxbFsyr0",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n      \"title\": \"Harry Potter\",\r\n      \"genre\": \"Fantasy\",\r\n      \"isbn\": \"333\",\r\n      \"summary\": \"wizard, hogwarts, young adult\",\r\n      \"publishedYear\": 2005,\r\n      \"author\": {\r\n          \"name\": \"JK Rowling\"\r\n      }\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "books - add with non admin user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZDE5M2NjODM1Y2U3ZjI5NDJkZGYiLCJlbWFpbCI6InVzZXIyQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTY4NTMxODQ0N30.cTTO_FJsQQodfHX2XiOo6gglDCxxbl78oSXmVdUnRCo",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n      \"title\": \"Harry Potter\",\r\n      \"genre\": \"Fantasy\",\r\n      \"isbn\": \"333\",\r\n      \"summary\": \"wizard, hogwarts, young adult\",\r\n      \"publishedYear\": 2005,\r\n      \"author\": {\r\n          \"name\": \"JK Rowling\"\r\n      }\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "books - update with admin user",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZTYyYWI4YmUzYzJmZDYyNDg0YjUiLCJlbWFpbCI6InVzZXIzQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIiwiYWRtaW4iXSwiaWF0IjoxNjg1MzE3MjQzfQ.tUUr4Fu5WxlTUaO-88cVXnCJXeQZrsFsJ8VSxbFsyr0",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n      \"title\": \"James Bond\",\r\n      \"genre\": \"Spy\",\r\n      \"isbn\": \"111\",\r\n      \"summary\": \"High jinks\",\r\n      \"publishedYear\": 1985\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/books/6473e6b9b8be3c2fd62484bb",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"books",
+						"6473e6b9b8be3c2fd62484bb"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "books - update with non admin user",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZDE5M2NjODM1Y2U3ZjI5NDJkZGYiLCJlbWFpbCI6InVzZXIyQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTY4NTMxODQ0N30.cTTO_FJsQQodfHX2XiOo6gglDCxxbl78oSXmVdUnRCo",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n      \"title\": \"New Book\",\r\n      \"genre\": \"Whatever\",\r\n      \"isbn\": \"111\",\r\n      \"summary\": \"beach\",\r\n      \"publishedYear\": 1985,\r\n      \"author\": {\r\n          \"name\": \"Ian Fleming\"\r\n      }\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/books/6473e6b9b8be3c2fd62484bb",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"books",
+						"6473e6b9b8be3c2fd62484bb"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all books",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZDE4NGNjODM1Y2U3ZjI5NDJkZGMiLCJlbWFpbCI6InVzZXIxQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTY4NTMxMTkwM30.UchbhPz75g5C-cH_EMveZa5jyBWG7vZpm-wCS6hb1No",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all books with search",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZDE4NGNjODM1Y2U3ZjI5NDJkZGMiLCJlbWFpbCI6InVzZXIxQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTY4NTMxMTkwM30.UchbhPz75g5C-cH_EMveZa5jyBWG7vZpm-wCS6hb1No",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/books?search=bond",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"books"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "bond"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "books  by id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZTYyYWI4YmUzYzJmZDYyNDg0YjUiLCJlbWFpbCI6InVzZXIzQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIiwiYWRtaW4iXSwiaWF0IjoxNjg1MzE3MjQzfQ.tUUr4Fu5WxlTUaO-88cVXnCJXeQZrsFsJ8VSxbFsyr0",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/books/6473ec40b8be3c2fd62484d6",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"books",
+						"6473ec40b8be3c2fd62484d6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authors  by id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZTYyYWI4YmUzYzJmZDYyNDg0YjUiLCJlbWFpbCI6InVzZXIzQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIiwiYWRtaW4iXSwiaWF0IjoxNjg1MzE3MjQzfQ.tUUr4Fu5WxlTUaO-88cVXnCJXeQZrsFsJ8VSxbFsyr0",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/authors/6473ec40b8be3c2fd62484d4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"authors",
+						"6473ec40b8be3c2fd62484d4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all authors",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZTYyYWI4YmUzYzJmZDYyNDg0YjUiLCJlbWFpbCI6InVzZXIzQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIiwiYWRtaW4iXSwiaWF0IjoxNjg1MzE3MjQzfQ.tUUr4Fu5WxlTUaO-88cVXnCJXeQZrsFsJ8VSxbFsyr0",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/authors",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all authors with search string",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZTYyYWI4YmUzYzJmZDYyNDg0YjUiLCJlbWFpbCI6InVzZXIzQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIiwiYWRtaW4iXSwiaWF0IjoxNjg1MzE3MjQzfQ.tUUr4Fu5WxlTUaO-88cVXnCJXeQZrsFsJ8VSxbFsyr0",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/authors?search='ian abc fleming'",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"authors"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "'ian abc fleming'"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authors - update with admin user",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZTYyYWI4YmUzYzJmZDYyNDg0YjUiLCJlbWFpbCI6InVzZXIzQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIiwiYWRtaW4iXSwiaWF0IjoxNjg1MzE3MjQzfQ.tUUr4Fu5WxlTUaO-88cVXnCJXeQZrsFsJ8VSxbFsyr0",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n          \"gender\": \"Male\",\r\n          \"blurb\": \"High jinks, high speed car races, spy\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/authors/6473e6b9b8be3c2fd62484b9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"authors",
+						"6473e6b9b8be3c2fd62484b9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authors - update with non admin user",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZDE5M2NjODM1Y2U3ZjI5NDJkZGYiLCJlbWFpbCI6InVzZXIyQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTY4NTMxODQ0N30.cTTO_FJsQQodfHX2XiOo6gglDCxxbl78oSXmVdUnRCo",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n          \"name\": \"Ian J Fleming\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/authors/6473e6b9b8be3c2fd62484bb",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"authors",
+						"6473e6b9b8be3c2fd62484bb"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "favorites admin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZTYyYWI4YmUzYzJmZDYyNDg0YjUiLCJlbWFpbCI6InVzZXIzQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIiwiYWRtaW4iXSwiaWF0IjoxNjg1MzE3MjQzfQ.tUUr4Fu5WxlTUaO-88cVXnCJXeQZrsFsJ8VSxbFsyr0",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " [ \r\n      \"6473ec40b8be3c2fd62484d6\",\r\n      \"647536e96cca773837c6ba9b\"\r\n ] ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/favorites",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"favorites"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "favorites non admin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZTYyYWI4YmUzYzJmZDYyNDg0YjUiLCJlbWFpbCI6InVzZXIzQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIiwiYWRtaW4iXSwiaWF0IjoxNjg1MzE3MjQzfQ.tUUr4Fu5WxlTUaO-88cVXnCJXeQZrsFsJ8VSxbFsyr0",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " [ \r\n      \"6473ec40b8be3c2fd62484d6\",\r\n      \"647536e96cca773837c6ba9b\"\r\n ] ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/favorites",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"favorites"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all favorites admin user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZTYyYWI4YmUzYzJmZDYyNDg0YjUiLCJlbWFpbCI6InVzZXIzQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIiwiYWRtaW4iXSwiaWF0IjoxNjg1MzE3MjQzfQ.tUUr4Fu5WxlTUaO-88cVXnCJXeQZrsFsJ8VSxbFsyr0",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/favorites",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"favorites"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all favorites non admin user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZDE5M2NjODM1Y2U3ZjI5NDJkZGYiLCJlbWFpbCI6InVzZXIyQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTY4NTMxODQ0N30.cTTO_FJsQQodfHX2XiOo6gglDCxxbl78oSXmVdUnRCo",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/favorites",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"favorites"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "favorites by id admin user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZTYyYWI4YmUzYzJmZDYyNDg0YjUiLCJlbWFpbCI6InVzZXIzQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIiwiYWRtaW4iXSwiaWF0IjoxNjg1MzE3MjQzfQ.tUUr4Fu5WxlTUaO-88cVXnCJXeQZrsFsJ8VSxbFsyr0",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/favorites/647539b9ae795971370329b3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"favorites",
+						"647539b9ae795971370329b3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "favorites by id non admin user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZDE5M2NjODM1Y2U3ZjI5NDJkZGYiLCJlbWFpbCI6InVzZXIyQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTY4NTMxODQ0N30.cTTO_FJsQQodfHX2XiOo6gglDCxxbl78oSXmVdUnRCo",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/favorites/647539b9ae795971370329b3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"favorites",
+						"647539b9ae795971370329b3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "favorites - update with admin user",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZTYyYWI4YmUzYzJmZDYyNDg0YjUiLCJlbWFpbCI6InVzZXIzQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIiwiYWRtaW4iXSwiaWF0IjoxNjg1MzE3MjQzfQ.tUUr4Fu5WxlTUaO-88cVXnCJXeQZrsFsJ8VSxbFsyr0",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " [ \r\n      \"6473ec40b8be3c2fd62484d6\",\r\n      \"647536e96cca773837c6ba9b\"\r\n ] ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/favorites/6473e6b9b8be3c2fd62484b9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"favorites",
+						"6473e6b9b8be3c2fd62484b9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "favorites - update with non admin user",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZDE5M2NjODM1Y2U3ZjI5NDJkZGYiLCJlbWFpbCI6InVzZXIyQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTY4NTMxODQ0N30.cTTO_FJsQQodfHX2XiOo6gglDCxxbl78oSXmVdUnRCo",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": " [ \r\n      \"6473ec40b8be3c2fd62484d6\",\r\n      \"647536e96cca773837c6ba9b\"\r\n ] ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/favorites/6473e6b9b8be3c2fd62484b9",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"favorites",
+						"6473e6b9b8be3c2fd62484b9"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "favorites - delete with non admin user",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZDE5M2NjODM1Y2U3ZjI5NDJkZGYiLCJlbWFpbCI6InVzZXIyQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTY4NTMxODQ0N30.cTTO_FJsQQodfHX2XiOo6gglDCxxbl78oSXmVdUnRCo",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/favorites/647539b9ae795971370329b3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"favorites",
+						"647539b9ae795971370329b3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "favorites - delete with admin user",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDczZDE5M2NjODM1Y2U3ZjI5NDJkZGYiLCJlbWFpbCI6InVzZXIyQGFiYy5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTY4NTMxODQ0N30.cTTO_FJsQQodfHX2XiOo6gglDCxxbl78oSXmVdUnRCo",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/favorites/647539b9ae795971370329b3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"favorites",
+						"647539b9ae795971370329b3"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
