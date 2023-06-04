@@ -31,6 +31,7 @@ const getByUserAndId = async (userId, favoriteId) => {
         }
     }
 
+    // get book details
     const stage2 = {
         $lookup:
         {
@@ -40,10 +41,22 @@ const getByUserAndId = async (userId, favoriteId) => {
             as: "books"
         }
     };
-
     const stage3 = { $unwind: "$books" };
-    const stage4 = { $project: { "books.__v": 0 } };
-    const stage5 = {
+
+    // get author details
+    const stage4 = {
+        $lookup:
+        {
+            from: "authors",
+            localField: "books.authorId",
+            foreignField: "_id",
+            as: "books.author"
+        }
+    };
+    const stage5 = { $unwind: "$books.author" };
+    const stage6 = { $project: { "books.__v": 0, "books.author.__v": 0 } };
+    // group by favorite id and user id
+    const stage7 = {
         $group: {
             _id: "$_id",
             userId: { $first: "$userId" },
@@ -57,7 +70,9 @@ const getByUserAndId = async (userId, favoriteId) => {
             stage2,
             stage3,
             stage4,
-            stage5
+            stage5,
+            stage6,
+            stage7
         ]);
     } else
         favoritesWithBooks = await Favorite.aggregate([
@@ -65,10 +80,12 @@ const getByUserAndId = async (userId, favoriteId) => {
             stage2,
             stage3,
             stage4,
-            stage5
+            stage5,
+            stage6,
+            stage7
         ]);
 
-    console.log(`favoritesWithBooks - ${JSON.stringify(favoritesWithBooks)}`)
+    //console.log(`favoritesWithBooks - ${JSON.stringify(favoritesWithBooks)}`)
     return favoritesWithBooks;
 }
 
