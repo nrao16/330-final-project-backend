@@ -65,6 +65,7 @@ const getByUserAndId = async (userId, favoriteId) => {
     };
     let favoritesWithBooks = [];
 
+    // if no matching stage on userId and/or favoriteId 
     if (!stage1 || JSON.stringify(stage1) === '{}') {
         favoritesWithBooks = await Favorite.aggregate([
             stage2,
@@ -74,7 +75,8 @@ const getByUserAndId = async (userId, favoriteId) => {
             stage6,
             stage7
         ]);
-    } else
+    } else {
+        // have a matching stage on userId and/or favoriteId
         favoritesWithBooks = await Favorite.aggregate([
             stage1,
             stage2,
@@ -84,6 +86,7 @@ const getByUserAndId = async (userId, favoriteId) => {
             stage6,
             stage7
         ]);
+    }
 
     //console.log(`favoritesWithBooks - ${JSON.stringify(favoritesWithBooks)}`)
     return favoritesWithBooks;
