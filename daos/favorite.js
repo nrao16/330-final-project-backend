@@ -22,7 +22,16 @@ module.exports.getById = async (favoriteId) => {
         }
     },
     { $unwind: "$books" },
-    { $project: { "books._id": 0, "books.__v": 0 } },
+    {
+        $lookup:
+        {
+            from: "authors",
+            localField: "authorId",
+            foreignField: "_id",
+            as: "author"
+        }
+    },
+    { $project: { "books.__v": 0 } },
     {
         $group: {
             _id: "$_id",
@@ -54,7 +63,7 @@ module.exports.getByUserAndId = async (userId, favoriteId) => {
         }
     },
     { $unwind: "$books" },
-    { $project: { "books._id": 0, "books.__v": 0 } },
+    { $project: { "books.__v": 0 } },
     {
         $group:
         {
@@ -85,7 +94,7 @@ module.exports.getAllByUserId = async (userId) => {
         }
     },
     { $unwind: "$books" },
-    { $project: { "books._id": 0, "books.__v": 0 } },
+    { $project: { "books.__v": 0 } },
     {
         $group:
         {
@@ -112,7 +121,7 @@ module.exports.getAll = async () => {
             }
         },
         { $unwind: "$books" },
-        { $project: { "books._id": 0, "books.__v": 0 } },
+        { $project: { "books.__v": 0 } },
         {
             $group:
             {

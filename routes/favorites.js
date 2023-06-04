@@ -13,36 +13,38 @@ router.post("/", async (req, res, next) => {
     try {
         console.log(`req.user-${JSON.stringify(req.user)}`)
         const favoriteBooks = req.body;
+
+        // at least 1 book id is required
         if (!favoriteBooks || !favoriteBooks.length === 0 ||
             favoriteBooks.some(id => id === null)) {
-            res.status(400).send('Book id is required and has to be valid.');
-        } else {
-            // get book details, matching given favorite book ids
-            const matchedBooks = await bookDAO.getByListOfIds(favoriteBooks);
-            let matchedBooksMap = new Map();
+            return res.status(400).send('Book id is required and has to be valid.');
+        }
+        // get book details, matching given favorite book ids
+        const matchedBooks = await bookDAO.getByListOfIds(favoriteBooks);
+        let matchedBooksMap = new Map();
 
-            // convert the matched books into a map before checking if all request ids were found
-            matchedBooks.forEach((book) => {
-                matchedBooksMap.set(book._id.toString(), book);
-            });
+        // convert the matched books into a map before checking if all request ids were found
+        matchedBooks.forEach((book) => {
+            matchedBooksMap.set(book._id.toString(), book);
+        });
 
-            let invalidIds = [];
-            // for each book, get the corresponding matched book from map, if not found then add to invalid list
-            favoriteBooks.forEach(bookId => {
-                if (!matchedBooksMap.has(bookId)) {
-                    invalidIds.push(bookId);
-                }
-            });
-
-            if (invalidIds.length == 0) {
-                const favoriteObj = { userId: req.user._id, bookIds: favoriteBooks }
-                const savedFavorite = await favoriteDAO.create(favoriteObj);
-                res.json(savedFavorite);
-            } else {
-                res.status(400).send(`Book id(s) ${JSON.stringify(invalidIds)} not found.`);
+        let invalidIds = [];
+        // for each book, get the corresponding matched book from map, if not found then add to invalid list
+        favoriteBooks.forEach(bookId => {
+            if (!matchedBooksMap.has(bookId)) {
+                invalidIds.push(bookId);
             }
+        });
+
+        // no invalid book ids so do the create and send back newly created favorite details
+        if (invalidIds.length == 0) {
+            const favoriteObj = { userId: req.user._id, bookIds: favoriteBooks }
+            const savedFavorite = await favoriteDAO.create(favoriteObj);
+            return res.json(savedFavorite);
         }
 
+        // some ids were not found
+        return res.status(400).send(`Book id(s) ${JSON.stringify(invalidIds)} not found.`);
 
     } catch (e) {
         next(e);
@@ -53,6 +55,7 @@ router.post("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
     try {
         let favorite = {};
+
         // admin users can get any favorite collection
         if (req?.user?.roles?.includes('admin')) {
             favorite = await favoriteDAO.getById(req.params.id);
@@ -60,11 +63,13 @@ router.get("/:id", async (req, res, next) => {
             // non admin users can only get their own favorites
             favorite = await favoriteDAO.getByUserAndId(req.user._id, req.params.id);
         }
-        if (favorite[0]) {
-            res.json(favorite[0]);
-        } else {
-            res.sendStatus(404);
+        // return favorite details
+        if (favorite && favorite[0]) {
+            return res.json(favorite[0]);
         }
+        // favorite id not found
+        return res.sendStatus(400).send(`Favorite id ${req.params.id} not found.`);
+
     } catch (e) {
         console.log(e);
         next(e);
@@ -75,6 +80,7 @@ router.get("/:id", async (req, res, next) => {
 router.get("/", async (req, res, next) => {
     try {
         let favorites = [];
+
         // admin users can get any favorite collection
         if (req?.user?.roles?.includes('admin')) {
             favorites = await favoriteDAO.getAll();
@@ -82,7 +88,8 @@ router.get("/", async (req, res, next) => {
             // non admin users can only get their own favorites
             favorites = await favoriteDAO.getAllByUserId(req.user._id);
         }
-        res.json(favorites);
+        // can be 0 or more favorites
+        return res.json(favorites);
     } catch (e) {
         next(e);
     }
@@ -92,53 +99,63 @@ router.get("/", async (req, res, next) => {
 router.put("/:id", async (req, res, next) => {
     try {
         const favoriteId = req.params.id;
+
+        // check if favorite id exists
         const favoriteExists = await favoriteDAO.getById(favoriteId);
-        if (!favoriteExists) {
-            res.status(400).send(`Favorite Id ${favoriteId} not found.`);
+        console.log(`favoriteExists-${JSON.stringify(favoriteExists)}`)
+        if (!favoriteExists || favoriteExists.length == 0) {
+            return res.status(400).send(`Favorite Id ${favoriteId} not found.`);
         }
 
+        // need at least 1 book id
         const favoriteBooks = req.body;
         if (!favoriteBooks || !favoriteBooks.length === 0 ||
             favoriteBooks.some(id => id === null)) {
-            res.status(400).send('Book id is required and has to be valid.');
-        } else {
-            // get book details, matching given favorite book ids
-            const matchedBooks = await bookDAO.getByListOfIds(favoriteBooks);
-            let matchedBooksMap = new Map();
+            return res.status(400).send('At least 1 Book id is required and has to be valid.');
+        }
 
-            // convert the matched books into a map before checking if all request ids were found
-            matchedBooks.forEach((book) => {
-                matchedBooksMap.set(book._id.toString(), book);
-            });
+        // get book details, matching given favorite book ids
+        const matchedBooks = await bookDAO.getByListOfIds(favoriteBooks);
+        let matchedBooksMap = new Map();
 
-            let invalidIds = [];
-            // for each book, get the corresponding matched book from map, if not found then add to invalid list
-            favoriteBooks.forEach(bookId => {
-                if (!matchedBooksMap.has(bookId)) {
-                    invalidIds.push(bookId);
-                }
-            });
+        // convert the matched books into a map before checking if all request ids were found
+        matchedBooks.forEach((book) => {
+            matchedBooksMap.set(book._id.toString(), book);
+        });
 
-            if (invalidIds.length == 0) {
-                const favoriteObj = { bookIds: favoriteBooks }
-                let updatedFavorite = {};
-                // admin users can update any favorite collection
-                if (req?.user?.roles?.includes('admin')) {
-                    updatedFavorite = await favoriteDAO.updateById(favoriteId, favoriteObj);
-                } else {
-                    // non admin users can only update their own favorites
-                    updatedFavorite = await favoriteDAO.updateByUserAndId(req.user._id, favoriteId, favoriteObj);
-                }
-                console.log(`updatedFavorite - ${JSON.stringify(updatedFavorite)}`);
-                if (!updatedFavorite) {
-                    res.sendStatus(400);
-                } else {
-                    res.sendStatus(200);
-                }
+        let invalidIds = [];
+        // for each book, get the corresponding matched book from map, if not found then add to invalid list
+        favoriteBooks.forEach(bookId => {
+            if (!matchedBooksMap.has(bookId)) {
+                invalidIds.push(bookId);
+            }
+        });
+
+        // no invalid book ids so do the update
+        if (invalidIds.length == 0) {
+            const favoriteObj = { bookIds: favoriteBooks }
+            let updatedFavorite = {};
+
+            // admin users can update any favorite collection
+            if (req?.user?.roles?.includes('admin')) {
+                updatedFavorite = await favoriteDAO.updateById(favoriteId, favoriteObj);
             } else {
-                res.status(400).send(`Book id(s) ${JSON.stringify(invalidIds)} not found.`);
+                // non admin users can only update their own favorites
+                updatedFavorite = await favoriteDAO.updateByUserAndId(req.user._id, favoriteId, favoriteObj);
+            }
+
+            console.log(`updatedFavorite - ${JSON.stringify(updatedFavorite)}`);
+            // no match means that user/favorite id combo was not found
+            if (!updatedFavorite || updatedFavorite.matchedCount === 0) {
+                return res.status(400).send(`Favorite Id ${favoriteId} not found in your collection.`);
+            } else {
+                return res.sendStatus(200);
             }
         }
+
+        // some invalid book ids found
+        return res.status(400).send(`Book id(s) ${JSON.stringify(invalidIds)} not found.`);
+
     } catch (e) {
         next(e);
     }
@@ -148,13 +165,14 @@ router.put("/:id", async (req, res, next) => {
 router.delete("/:id", async (req, res, next) => {
     try {
         const favoriteId = req.params.id;
+        // check that favorite id exists
         const favoriteExists = await favoriteDAO.getById(favoriteId);
         console.log(`favoriteExists-${favoriteExists}`);
-        if (!favoriteExists) {
-            res.status(400).send(`Favorite Id ${favoriteId} not found.`);
-            return;
+        if (!favoriteExists || favoriteExists.length == 0) {
+            return res.status(400).send(`Favorite Id ${favoriteId} not found.`);
         }
         let deletedFavorite = {};
+
         // admin users can delete any favorite collection
         if (req?.user?.roles?.includes('admin')) {
             deletedFavorite = await favoriteDAO.removeFavoriteById(req.params.id);
@@ -164,13 +182,13 @@ router.delete("/:id", async (req, res, next) => {
         }
         console.log(`deletedFavorite - ${JSON.stringify(deletedFavorite)}`);
 
-        if (!deletedFavorite) {
-            res.sendStatus(400);
+        // no delete means that user/favorite id combo was not found
+        if (!deletedFavorite || deletedFavorite.deletedCount === 0) {
+            return res.status(400).send(`Favorite Id ${favoriteId} not found in your collection.`);
         } else {
-            res.sendStatus(200);
+            return res.sendStatus(200);
         }
     } catch (e) {
-        console.log(e);
         next(e);
     }
 });

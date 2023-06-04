@@ -44,7 +44,8 @@ router.post("/", async (req, res, next) => {
                 const token = jwtToken.sign({
                     _id: saveduser._id,
                     email: saveduser.email,
-                    roles: saveduser.roles
+                    roles: saveduser.roles,
+                    expiresIn: "2h"
                 }, 'secret');;
 
                 res.json({ token: token });
