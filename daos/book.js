@@ -7,10 +7,10 @@ const { search } = require('../routes/login');
 module.exports = {};
 
 // get all books optionally with search term - author details are included in response
-module.exports.getAll = (searchText, page, perPage) => {
+module.exports.getAll = async(searchText, page, perPage) => {
 
     if (!searchText) {
-        return Book.aggregate(
+        return await Book.aggregate(
             [
                 {
                     $lookup: {
@@ -25,7 +25,7 @@ module.exports.getAll = (searchText, page, perPage) => {
     }
     // no search text so return all books
     else {
-        return Book.aggregate(
+        return await Book.aggregate(
             [{
                 $match: {
                     $text: {
@@ -47,11 +47,11 @@ module.exports.getAll = (searchText, page, perPage) => {
 }
 
 // get a single book by id including author info
-module.exports.getById = (bookId) => {
+module.exports.getById = async (bookId) => {
     if (!mongoose.Types.ObjectId.isValid(bookId)) {
         return null;
     }
-    return Book.aggregate(
+    return await Book.aggregate(
         [{
             $match: {
                 _id: new mongoose.Types.ObjectId(bookId),

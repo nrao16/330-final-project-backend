@@ -1,18 +1,37 @@
 const mongoose = require('mongoose');
 const Favorite = require('../models/favorite');
 
-module.exports = {};
-
-module.exports.create = async (favoriteData) => {
+const create = async (favoriteData) => {
     return await Favorite.create(favoriteData);
 }
 
-module.exports.getById = async (favoriteId) => {
-    const favoriteWithBooks = Favorite.aggregate([{
-        $match: { _id: new mongoose.Types.ObjectId(favoriteId) }
-    },
-    { $unwind: '$bookIds' },
-    {
+// most specific has all the queries - all the other functions call this function with varying params
+const getByUserAndId = async (userId, favoriteId) => {
+    let stage1 = {};
+
+    // match favoriteId only
+    if (!userId && favoriteId) {
+        stage1 = {
+            $match: { _id: new mongoose.Types.ObjectId(favoriteId) }
+        };
+    } else if (userId && favoriteId) {
+        // match on userId and favoriteId
+        stage1 = {
+            $match: {
+                _id: new mongoose.Types.ObjectId(favoriteId),
+                userId: new mongoose.Types.ObjectId(userId)
+            }
+        };
+    } else if (userId && !favoriteId) {
+        // match on userId only
+        stage1 = {
+            $match: {
+                userId: new mongoose.Types.ObjectId(userId)
+            }
+        }
+    }
+
+    const stage2 = {
         $lookup:
         {
             from: "books",
@@ -20,145 +39,92 @@ module.exports.getById = async (favoriteId) => {
             foreignField: "_id",
             as: "books"
         }
-    },
-    { $unwind: "$books" },
-    {
-        $lookup:
-        {
-            from: "authors",
-            localField: "authorId",
-            foreignField: "_id",
-            as: "author"
-        }
-    },
-    { $project: { "books.__v": 0 } },
-    {
+    };
+
+    const stage3 = { $unwind: "$books" };
+    const stage4 = { $project: { "books.__v": 0 } };
+    const stage5 = {
         $group: {
             _id: "$_id",
             userId: { $first: "$userId" },
             books: { $push: "$books" }
         }
-    }
-    ]);
+    };
+    let favoritesWithBooks = [];
 
-    console.log(`favoriteWithBooks - ${JSON.stringify(favoriteWithBooks)}`)
+    if (!stage1 || JSON.stringify(stage1) === '{}') {
+        favoritesWithBooks = await Favorite.aggregate([
+            stage2,
+            stage3,
+            stage4,
+            stage5
+        ]);
+    } else
+        favoritesWithBooks = await Favorite.aggregate([
+            stage1,
+            stage2,
+            stage3,
+            stage4,
+            stage5
+        ]);
+
+    console.log(`favoritesWithBooks - ${JSON.stringify(favoritesWithBooks)}`)
+    return favoritesWithBooks;
+}
+
+// only favoriteId
+const getById = async (favoriteId) => {
+
+    const favoriteWithBooks = await getByUserAndId('', favoriteId);
+
     return favoriteWithBooks;
 }
 
-module.exports.getByUserAndId = async (userId, favoriteId) => {
-    const favoritesWithBooksForUser = Favorite.aggregate([{
-        $match: {
-            _id: new mongoose.Types.ObjectId(favoriteId),
-            userId: new mongoose.Types.ObjectId(userId)
-        }
-    },
-    { $unwind: { path: '$bookIds' } },
-    {
-        $lookup:
-        {
-            from: "books",
-            localField: "bookIds",
-            foreignField: "_id",
-            as: "books"
-        }
-    },
-    { $unwind: "$books" },
-    { $project: { "books.__v": 0 } },
-    {
-        $group:
-        {
-            _id: "$_id",
-            userId: { $first: "$userId" },
-            books: { $push: "$books" }
-        }
-    }
-    ]);
+
+// only user id
+const getAllByUserId = async (userId) => {
+    const favoritesWithBooksForUser = await getByUserAndId(userId, '');
 
     return favoritesWithBooksForUser;
 }
 
-module.exports.getAllByUserId = async (userId) => {
-    const favoritesWithBooksForUser = Favorite.aggregate([{
-        $match: {
-            userId: new mongoose.Types.ObjectId(userId)
-        }
-    },
-    { $unwind: { path: '$bookIds' } },
-    {
-        $lookup:
-        {
-            from: "books",
-            localField: "bookIds",
-            foreignField: "_id",
-            as: "books"
-        }
-    },
-    { $unwind: "$books" },
-    { $project: { "books.__v": 0 } },
-    {
-        $group:
-        {
-            _id: "$_id",
-            userId: { $first: "$userId" },
-            books: { $push: "$books" }
-        }
-    }
-    ]);
+// no user id or favorite id
+const getAll = async () => {
+    const favoritesWithBooks = await getByUserAndId('', '');
 
-    return favoritesWithBooksForUser;
+    return favoritesWithBooks;
 }
 
-module.exports.getAll = async () => {
-    const favoritesWithBooksForUser = Favorite.aggregate([
-        { $unwind: { path: '$bookIds' } },
-        {
-            $lookup:
-            {
-                from: "books",
-                localField: "bookIds",
-                foreignField: "_id",
-                as: "books"
-            }
-        },
-        { $unwind: "$books" },
-        { $project: { "books.__v": 0 } },
-        {
-            $group:
-            {
-                _id: "$_id",
-                userId: { $first: "$userId" },
-                books: { $push: "$books" }
-            }
-        }
-    ]);
-
-    return favoritesWithBooksForUser;
-}
-
-module.exports.updateById = async (favoriteId, newObj) => {
+const updateById = async (favoriteId, newObj) => {
     if (!mongoose.Types.ObjectId.isValid(favoriteId)) {
         return false;
     }
     return await Favorite.updateOne({ _id: favoriteId }, newObj);
 }
 
-module.exports.updateByUserAndId = async (userId, favoriteId, newObj) => {
+const updateByUserAndId = async (userId, favoriteId, newObj) => {
     if (!mongoose.Types.ObjectId.isValid(favoriteId)) {
         return false;
     }
     return await Favorite.updateOne({ _id: favoriteId, userId: userId }, newObj);
 }
 
-module.exports.removeFavoriteByUserAndId = async (userId, favoriteId) => {
+const removeFavoriteByUserAndId = async (userId, favoriteId) => {
     if (!mongoose.Types.ObjectId.isValid(favoriteId)) {
         return null;
     }
     return await Favorite.deleteOne({ _id: favoriteId, userId: userId });
 }
 
-module.exports.removeFavoriteById = async (favoriteId) => {
+const removeFavoriteById = async (favoriteId) => {
     if (!mongoose.Types.ObjectId.isValid(favoriteId)) {
         return null;
     }
     return await Favorite.deleteOne({ _id: favoriteId });
 }
+
+module.exports = {
+    create, getByUserAndId, getById, getAllByUserId, getAll,
+    updateById, updateByUserAndId,
+    removeFavoriteById, removeFavoriteByUserAndId
+};

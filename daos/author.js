@@ -4,10 +4,10 @@ const Author = require('../models/author');
 
 module.exports = {};
 
-module.exports.getAll = (nameSearch, page, perPage) => {
+module.exports.getAll = async (nameSearch, page, perPage) => {
     // search in text index - match on author name and blurb
     if (nameSearch) {
-        return Author.find({
+        return await Author.find({
             $text: { $search: nameSearch }
         },
             { score: { $meta: 'textScore' } }
@@ -15,15 +15,15 @@ module.exports.getAll = (nameSearch, page, perPage) => {
 
     } else {
         // return all authors
-        return Author.find().limit(perPage).skip(perPage * page).lean();
+        return await Author.find().limit(perPage).skip(perPage * page).lean();
     }
 }
 
-module.exports.getById = (authorId) => {
+module.exports.getById = async (authorId) => {
     if (!mongoose.Types.ObjectId.isValid(authorId)) {
         return null;
     }
-    return Author.findOne({ _id: authorId }).lean();
+    return await Author.findOne({ _id: authorId }).lean();
 }
 
 module.exports.updateById = async (authorId, newObj) => {
