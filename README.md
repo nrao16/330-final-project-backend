@@ -1,6 +1,13 @@
 # 330-final-project-backend
 Final project for 330 course using nodejs/express/mongodb
 
+*------- POC UPDATE-------*
+- All models, daos, routes, middleware, postman tests for all routes and login jest test done.
+- Need to work on jest tests for authors, books, favorites.
+- I wanted to be able to search on author name in the books api but that is something I am still finding difficult to do. I will try to get that working.   
+
+*--------------------------*
+
 ## Scenario
 This is a continuation of the project theme that I submitted for my React course. 
 I would like users to be able to create lists of favorite books that are associated with their account (based on email address) and perform additions/deletions/updates to their favorite lists. In the UI, the book lists were from the New York Times bestseller lists and users were able to favorite them to add them to a firebase db. 
@@ -98,7 +105,7 @@ Total 3 weeks for project submission on June 18th.
     - [x] Create authors route and test with Postman
     - [x] Create favorite model
     - [x] Create favorite DAO
-    - [ ] Create favorites route and test with Postman
+    - [x] Create favorites route and test with Postman
     - [ ] Create jest tests for books route - Valid CRU based on roles. Unauthorized access to perform create and updates. 
     - [ ] Submit prototype/proof of concept with all routes working with basic operations.
 - Week 8 - 9 - create jest tests. Test overall project and prep for presentation.
