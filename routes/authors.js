@@ -11,9 +11,9 @@ router.get("/:id", async (req, res, next) => {
   try {
     const author = await authorDAO.getById(req.params.id);
     if (author) {
-      res.json(author);
+      return res.json(author);
     } else {
-      res.status(400).send(`Author Id ${req.params.id} not found.`);
+      return res.status(400).send(`Author Id ${req.params.id} not found.`);
     }
   } catch (e) {
     next(e);
@@ -26,8 +26,9 @@ router.get("/", async (req, res, next) => {
     let { search, page, perPage } = req.query;
     page = page ? Number(page) : 0;
     perPage = perPage ? Number(perPage) : 10;
+
     const authors = await authorDAO.getAll(search, page, perPage);
-    res.json(authors);
+    return res.json(authors);
   } catch (e) {
     next(e);
   }
@@ -38,15 +39,19 @@ router.put("/:id", isAdmin, async (req, res, next) => {
   try {
     const authorId = req.params.id;
     const author = req.body;
+
+    // check for at least one field
     if (!author || JSON.stringify(author) === '{}') {
-      res.status(400).send('Update fields required.');
+      return res.status(400).send('Update fields required.');
     } else {
+      // check that author id exists
       const authorExists = await authorDAO.getById(authorId);
       if (!authorExists) {
-        res.status(400).send(`Author Id ${authorId} not found.`);
+        return res.status(400).send(`Author Id ${authorId} not found.`);
       }
+
       const updatedAuthor = await authorDAO.updateById(authorId, author);
-      updatedAuthor ? res.json(`Author Id ${authorId} updated`) : res.status(400).send(`Unable to update.`);
+      return updatedAuthor ? res.json(`Author Id ${authorId} updated`) :  res.status(400).send(`Unable to update author id ${authorId}.`);
     }
   } catch (e) {
     next(e);

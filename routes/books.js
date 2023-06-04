@@ -11,10 +11,10 @@ router.post("/", isAdmin, async (req, res, next) => {
     try {
         const book = req.body;
         if (!book || !book.title || !book.isbn || !book.publishedYear || !book.author || !book.author.name) {
-            res.status(400).send('Book title, isbn, publishedYear, and author name are required');
+            return res.status(400).send('Book title, isbn, publishedYear, and author name are required');
         } else {
             const savedBook = await bookDAO.create(book);
-            res.json(savedBook);
+            return res.json(savedBook);
         }
     } catch (e) {
         next(e);
@@ -26,9 +26,9 @@ router.get("/:id", async (req, res, next) => {
     try {
         const book = await bookDAO.getById(req.params.id);
         if (book) {
-            res.json(book);
+            return res.json(book);
         } else {
-            res.status(400).send(`Book Id ${req.params.id} not found.`);
+            return res.status(400).send(`Book Id ${req.params.id} not found.`);
         }
     } catch (e) {
         next(e);
@@ -42,8 +42,9 @@ router.get("/", async (req, res, next) => {
         page = page ? Number(page) : 0;
         perPage = perPage ? Number(perPage) : 10;
         let books = [];
+
         books = await bookDAO.getAll(search, page, perPage);
-        res.json(books);
+        return res.json(books);
     } catch (e) {
         next(e);
     }
@@ -56,17 +57,19 @@ router.put("/:id", isAdmin, async (req, res, next) => {
     try {
         const bookId = req.params.id;
         const book = req.body;
+        // at least one update field required
         if (!book || JSON.stringify(book) === '{}') {
-            res.status(400).send('Update fields required.');
+            return res.status(400).send('Update fields required.');
         } else if (book.author) {
-            res.status(400).send('Author cannot be updated, use author api to update author details.');
+            // author cannot be updated by book api
+            return res.status(400).send('Author cannot be updated, use author api to update author details.');
         } else {
             const bookExists = await bookDAO.getById(bookId);
             if (!bookExists) {
-                res.status(400).send(`Book Id ${bookId} not found.`);
+                return res.status(400).send(`Book Id ${bookId} not found.`);
             } else {
                 const updatedBook = await bookDAO.updateById(bookId, book);
-                updatedBook ? res.json(`Book Id ${bookId} updated`) : res.status(400).send(`Unable to update.`)
+                return updatedBook ? res.json(`Book Id ${bookId} updated`) : res.status(400).send(`Unable to update ${bookId}.`)
             }
         }
     } catch (e) {

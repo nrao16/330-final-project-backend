@@ -86,10 +86,13 @@ module.exports.create = async (bookData) => {
     // first create the author
     const createdAuthor = await Author.create(bookData.author);
     console.log(`createdAuthor - ${JSON.stringify(createdAuthor)}`)
+
+    // create a new object with authorId and given book data
     let bookWithAuthorId = { authorId: createdAuthor._id, ...bookData };
-    console.log(`bookWithAuthorId before delete -${JSON.stringify(bookWithAuthorId)}`);
+
+    // remove author object from book data - we will not be inserting author details, just the authorId
     delete bookWithAuthorId.author;
-    console.log(`bookWithAuthorId after delete-${JSON.stringify(bookWithAuthorId)}`);
+
     const created = await Book.create(bookWithAuthorId);
     console.log(`createdBook - ${JSON.stringify(created)}`);
     return created;

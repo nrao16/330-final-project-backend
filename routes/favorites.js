@@ -68,7 +68,7 @@ router.get("/:id", async (req, res, next) => {
             return res.json(favorite[0]);
         }
         // favorite id not found
-        return res.sendStatus(400).send(`Favorite id ${req.params.id} not found.`);
+        return res.status(400).send(`Favorite id ${req.params.id} not found.`);
 
     } catch (e) {
         console.log(e);
@@ -90,6 +90,7 @@ router.get("/", async (req, res, next) => {
         }
         // can be 0 or more favorites
         return res.json(favorites);
+
     } catch (e) {
         next(e);
     }
@@ -103,6 +104,7 @@ router.put("/:id", async (req, res, next) => {
         // check if favorite id exists
         const favoriteExists = await favoriteDAO.getById(favoriteId);
         console.log(`favoriteExists-${JSON.stringify(favoriteExists)}`)
+
         if (!favoriteExists || favoriteExists.length == 0) {
             return res.status(400).send(`Favorite Id ${favoriteId} not found.`);
         }
@@ -165,9 +167,11 @@ router.put("/:id", async (req, res, next) => {
 router.delete("/:id", async (req, res, next) => {
     try {
         const favoriteId = req.params.id;
+
         // check that favorite id exists
         const favoriteExists = await favoriteDAO.getById(favoriteId);
         console.log(`favoriteExists-${favoriteExists}`);
+
         if (!favoriteExists || favoriteExists.length == 0) {
             return res.status(400).send(`Favorite Id ${favoriteId} not found.`);
         }

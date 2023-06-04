@@ -5,7 +5,7 @@ const Author = require('../models/author');
 module.exports = {};
 
 module.exports.getAll = (nameSearch, page, perPage) => {
-    // search in text index
+    // search in text index - match on author name and blurb
     if (nameSearch) {
         return Author.find({
             $text: { $search: nameSearch }
@@ -14,8 +14,8 @@ module.exports.getAll = (nameSearch, page, perPage) => {
         ).sort({ score: { $meta: 'textScore' } }).limit(perPage).skip(perPage * page).lean();
 
     } else {
-        return Author.find().
-        limit(perPage).skip(perPage * page).lean();
+        // return all authors
+        return Author.find().limit(perPage).skip(perPage * page).lean();
     }
 }
 

@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 const userDAO = require('../../daos/user');
 
+// check if user has admin role
 const isAdmin = async (req, res, next) => {
     if (!req?.user?.roles?.includes('admin')) {
-        res.status(403).send('Not an admin user');
+        return res.status(403).send('Not an admin user');
     }
     else {
         next();
@@ -16,13 +17,14 @@ const isAuthorized = async (req, res, next) => {
     const bearerToken = reqHeader?.indexOf('Bearer ') != -1 ? reqHeader?.substring(reqHeader?.indexOf('Bearer ') + 7) : "";
 
     if (!bearerToken) {
-        res.status(401).send('Bearer token required');
+        return res.status(401).send('Bearer token required');
     } else {
         // get userId, email, roles from jwt token
         const decodedUser =(jwt.decode(bearerToken));
-        const userExists = userDAO.getUser(decodedUser?._id)
+        const userExists = userDAO.getUser(decodedUser?._id);
+        
         if (!decodedUser || !userExists) {
-            res.status(401).send('Invalid Bearer token');
+            return res.status(401).send('Invalid Bearer token');
         }
         else {
             req.user = {_id: decodedUser._id, email: decodedUser.email, roles : decodedUser.roles};
