@@ -3,8 +3,7 @@ Final project for 330 course using nodejs/express/mongodb
 
 *------- POC UPDATE-------*
 - All models, daos, routes, middleware, postman tests for all routes and login jest test done.
-- Need to work on jest tests for authors, books, favorites.
-- I wanted to be able to search on author name in the books api but that is something I am still finding difficult to do. I will try to get that working.   
+- Need to work on jest tests for authors, books, favorites. 
 
 *--------------------------*
 
