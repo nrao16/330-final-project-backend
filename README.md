@@ -45,12 +45,12 @@ In addition to the signup/login route, there will 3 additional routes to access 
             - Takes an array of book _id values (duplicates are ignored). This list is associated with the user id from the jwt token and stored in their favorites collection. In case of any invalid book ids, nothing will be created and a 400 error will be returned. 
         - Get a specific list of favorite books: `GET /favorites/:id` - open to all users
             - Returns book and author details of all books associated with favorites _id.
-            - Return a 404 if favorites _id is not associated with token user id. An admin user should be able to see any list of favorites.
+            - Return a 400 if favorites _id is not associated with token user id. An admin user should be able to see any list of favorites.
         - Update list of favorite books: `PUT /favorites/:id` - open to all users
             - This list of book ids will replace existing list associated with favorites _id. 
-            - Return a 404 if favorites _id is not associated with token user id. An admin user should be able to update any list.
+            - Return a 400 if favorites _id is not associated with token user id. An admin user should be able to update any list.
         - Delete list of favorite books: `DELETE /favorites/:id` - open to all users
-            - Return a 404 if favorites _id is not associated with token user id. An admin user should be able to delete any list.
+            - Return a 400 if favorites _id is not associated with token user id. An admin user should be able to delete any list.
         - Get all favorite lists: `GET /favorites` 
             - return all favorite lists created by the user making the request if not an admin user. If an admin user, return all favorite lists in the DB.
     - books (requires authentication)

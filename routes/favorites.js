@@ -21,24 +21,24 @@ router.post("/", async (req, res, next) => {
         }
         // get book details, matching given favorite book ids
         const matchedBooks = await bookDAO.getByListOfIds(favoriteBooks);
-        let matchedBooksMap = new Map();
+        let matchedBooksSet = new Set();
 
         // convert the matched books into a map before checking if all request ids were found
         matchedBooks.forEach((book) => {
-            matchedBooksMap.set(book._id.toString(), book);
+            matchedBooksSet.add(book._id.toString(), book);
         });
 
         let invalidIds = [];
         // for each book, get the corresponding matched book from map, if not found then add to invalid list
         favoriteBooks.forEach(bookId => {
-            if (!matchedBooksMap.has(bookId)) {
+            if (!matchedBooksSet.has(bookId)) {
                 invalidIds.push(bookId);
             }
         });
 
         // no invalid book ids so do the create and send back newly created favorite details
         if (invalidIds.length == 0) {
-            const favoriteObj = { userId: req.user._id, bookIds: favoriteBooks }
+            const favoriteObj = { userId: req.user._id, bookIds: [...matchedBooksSet] }
             const savedFavorite = await favoriteDAO.create(favoriteObj);
             return res.json(savedFavorite);
         }
@@ -118,24 +118,24 @@ router.put("/:id", async (req, res, next) => {
 
         // get book details, matching given favorite book ids
         const matchedBooks = await bookDAO.getByListOfIds(favoriteBooks);
-        let matchedBooksMap = new Map();
+        let matchedBooksSet = new Set();
 
         // convert the matched books into a map before checking if all request ids were found
         matchedBooks.forEach((book) => {
-            matchedBooksMap.set(book._id.toString(), book);
+            matchedBooksSet.add(book._id.toString(), book);
         });
 
         let invalidIds = [];
         // for each book, get the corresponding matched book from map, if not found then add to invalid list
         favoriteBooks.forEach(bookId => {
-            if (!matchedBooksMap.has(bookId)) {
+            if (!matchedBooksSet.has(bookId)) {
                 invalidIds.push(bookId);
             }
         });
 
         // no invalid book ids so do the update
         if (invalidIds.length == 0) {
-            const favoriteObj = { bookIds: favoriteBooks }
+            const favoriteObj = { bookIds: [...matchedBooksSet] }
             let updatedFavorite = {};
 
             // admin users can update any favorite collection
