@@ -107,7 +107,7 @@ Total 3 weeks for project submission on June 18th.
     - [x] Create favorite DAO
     - [x] Create favorites route and test with Postman
     - [ ] Create jest tests for books route - Valid CRU based on roles. Unauthorized access to perform create and updates. 
-    - [ ] Submit prototype/proof of concept with all routes working with basic operations.
+    - [x] Submit prototype/proof of concept with all routes working with basic operations.
 - Week 8 - 9 - create jest tests. Test overall project and prep for presentation.
     - [ ] Create jest tests for authors route - Valid RU based on roles. Unauthorized access to perform updates.
     - [ ] Create jest tests for favorites route - Valid CRUD based on roles. Unauthorized access to perform crud on other user's favorites except for admins. 

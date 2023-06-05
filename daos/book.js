@@ -10,6 +10,7 @@ module.exports = {};
 module.exports.getAll = async(searchText, page, perPage) => {
 
     if (!searchText) {
+         // no search text so return all books
         return await Book.aggregate(
             [
                 {
@@ -23,8 +24,9 @@ module.exports.getAll = async(searchText, page, perPage) => {
                 { $project: { 'author.__v': 0, '__v': 0 } }
             ]).limit(perPage).skip(perPage * page);
     }
-    // no search text so return all books
+    // match for matching search term
     else {
+        // search for a match on book indexes or a match on author name and return a union of the 2 sets of matches
         return await Book.aggregate(
             [{
                 $match: {
@@ -41,7 +43,26 @@ module.exports.getAll = async(searchText, page, perPage) => {
                     as: 'author'
                 }
             },
-            { $project: { 'author.__v': 0, '__v': 0 } }
+            { $unwind: {path: "$author", preserveNullAndEmptyArrays: false } },
+            { $project: { 'author.__v': 0, '__v': 0 } },
+            {
+                $unionWith: {
+                    coll: "books",
+                    pipeline: [
+                        {
+                            $lookup: { 
+                                from: 'authors', 
+                                localField:'authorId', 
+                                foreignField: '_id', 
+                                pipeline: [ 
+                                    {$match: {$expr: {$regexMatch: {input: "$name", regex: searchText, options: "i" } } } } ], 
+                                as: 'author'}
+                        }, 
+                        { $unwind: {path: "$author", preserveNullAndEmptyArrays: false } },
+                        { $project: { 'author.__v': 0, '__v': 0 } }
+                    ]                
+                }
+            }
             ]);
     }
 }
