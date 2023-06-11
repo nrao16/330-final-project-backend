@@ -11,6 +11,7 @@ router.get("/:id", async (req, res, next) => {
   try {
     const author = await authorDAO.getById(req.params.id);
     if (author) {
+      author.dateOfBirth = author.dateOfBirth?.toLocaleDateString();
       return res.json(author);
     } else {
       return res.status(400).send(`Author Id ${req.params.id} not found.`);
@@ -30,7 +31,8 @@ router.get("/", async (req, res, next) => {
     if (search && (authorName || dateOfBirth)) {
       return res.status(400).send(`Query can have either authorName/dateOfBirth OR free text search on name and blurb.`)
     }
-    const authors = await authorDAO.getAll(authorName, dateOfBirth, search, page, perPage);
+    let authors = await authorDAO.getAll(authorName, dateOfBirth, search, page, perPage);
+    authors.forEach(author => { author.dateOfBirth = author.dateOfBirth?.toLocaleDateString(); });
     return authors ? res.json(authors) : res.json([]);
   } catch (e) {
     next(e);
