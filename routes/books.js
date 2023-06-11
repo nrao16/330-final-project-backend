@@ -2,6 +2,7 @@ const { Router } = require("express");
 const router = Router();
 
 const bookDAO = require('../daos/book');
+const authorDAO = require('../daos/author');
 const { isAuthorized, isAdmin } = require('./middleware/auth');
 
 router.use(isAuthorized);
@@ -10,11 +11,21 @@ router.use(isAuthorized);
 router.post("/", isAdmin, async (req, res, next) => {
     try {
         const book = req.body;
-        if (!book || !book.title || !book.isbn || !book.publishedYear || !book.author || !book.author.name) {
-            return res.status(400).send('Book title, isbn, publishedYear, and author name are required');
+        if (!book || !book.title || !book.isbn || !book.publishedYear || (!book.authorId && (!book.author || !book.author.name))) {
+            return res.status(400).send('Book title, isbn, publishedYear, and author Id or author name are required');
         } else {
+            if (book.authorId) {
+                const authorFound = await authorDAO.getById(book.authorId);
+                if (!authorFound) {
+                    return res.status(400).send(`authorId ${book.authorId} not found.`);
+                }
+            }
             const savedBook = await bookDAO.create(book);
-            return res.json(savedBook);
+            if (savedBook) {
+                return res.json(savedBook);
+            } else {
+                return res.status(400).send('Book could not be created, check if duplicate.');
+            }
         }
     } catch (e) {
         next(e);
@@ -24,11 +35,11 @@ router.post("/", isAdmin, async (req, res, next) => {
 // Get single book for given book id
 router.get("/:id", async (req, res, next) => {
     try {
-        const book = await bookDAO.getById(req.params.id);
-        if (book) {
-            return res.json(book);
-        } else {
+        const bookExists = await bookDAO.getById(req.params.id);
+        if (!bookExists || bookExists.length == 0) {
             return res.status(400).send(`Book Id ${req.params.id} not found.`);
+        } else {
+            return res.json(bookExists);
         }
     } catch (e) {
         next(e);
@@ -65,7 +76,7 @@ router.put("/:id", isAdmin, async (req, res, next) => {
             return res.status(400).send('Author cannot be updated, use author api to update author details.');
         } else {
             const bookExists = await bookDAO.getById(bookId);
-            if (!bookExists) {
+            if (!bookExists || bookExists.length == 0) {
                 return res.status(400).send(`Book Id ${bookId} not found.`);
             } else {
                 const updatedBook = await bookDAO.updateById(bookId, book);

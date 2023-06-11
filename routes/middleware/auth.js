@@ -20,17 +20,25 @@ const isAuthorized = async (req, res, next) => {
         return res.status(401).send('Bearer token required');
     } else {
         // get userId, email, roles from jwt token
-        const decodedUser =(jwt.decode(bearerToken));
-        const userExists = userDAO.getUser(decodedUser?._id);
-        
-        if (!decodedUser || !userExists) {
+        const decodedJwt = (jwt.decode(bearerToken));
+        console.log(`decodedJwt - ${JSON.stringify(decodedJwt)}`);
+         // check if has not expired and token has a valid user
+
+         if (!decodedJwt || Date.now() >= decodedJwt.exp * 1000) {
             return res.status(401).send('Invalid Bearer token');
         }
+
+        const userExists = await userDAO.getUserById(decodedJwt?._id);
+        console.log(`userExists - ${JSON.stringify(userExists)}`)
+        if(!userExists || !userExists._id ) {
+            return res.status(401).send('Invalid User.');
+        }
+       
         else {
-            req.user = {_id: decodedUser._id, email: decodedUser.email, roles : decodedUser.roles};
+            req.user = { _id: userExists._id, email: userExists.email, roles: decodedJwt.roles };
             next();
         }
     }
 };
 
-module.exports = {isAuthorized, isAdmin};
+module.exports = { isAuthorized, isAdmin };

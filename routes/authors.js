@@ -20,15 +20,18 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-// Get all authors
+// Get all authors OR search for free text matching name or author blurb OR search for author name and yob
 router.get("/", async (req, res, next) => {
   try {
-    let { search, page, perPage } = req.query;
+    let { authorName, dateOfBirth, search, page, perPage } = req.query;
     page = page ? Number(page) : 0;
     perPage = perPage ? Number(perPage) : 10;
 
-    const authors = await authorDAO.getAll(search, page, perPage);
-    return res.json(authors);
+    if (search && (authorName || dateOfBirth)) {
+      return res.status(400).send(`Query can have either authorName/dateOfBirth OR free text search on name and blurb.`)
+    }
+    const authors = await authorDAO.getAll(authorName, dateOfBirth, search, page, perPage);
+    return authors ? res.json(authors) : res.json([]);
   } catch (e) {
     next(e);
   }
@@ -51,7 +54,7 @@ router.put("/:id", isAdmin, async (req, res, next) => {
       }
 
       const updatedAuthor = await authorDAO.updateById(authorId, author);
-      return updatedAuthor ? res.json(`Author Id ${authorId} updated`) :  res.status(400).send(`Unable to update author id ${authorId}.`);
+      return updatedAuthor ? res.json(`Author Id ${authorId} updated`) : res.status(400).send(`Unable to update author id ${authorId}.`);
     }
   } catch (e) {
     next(e);

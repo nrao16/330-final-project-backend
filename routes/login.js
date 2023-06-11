@@ -4,7 +4,7 @@ const router = Router();
 const jwtToken = require('jsonwebtoken');
 
 const userDAO = require('../daos/user');
-const {isAuthorized} = require('./middleware/auth')
+const { isAuthorized } = require('./middleware/auth')
 
 // signup with user email and password
 router.post("/signup", async (req, res, next) => {
@@ -15,7 +15,7 @@ router.post("/signup", async (req, res, next) => {
     } else {
         try {
             // check if a email is already associated with a user
-            const userExists = await userDAO.getUser(user.email);
+            const userExists = await userDAO.getUserByEmail(user.email);
 
             if (userExists) {
                 return res.status(409).send('User email already signed up.')
@@ -39,21 +39,19 @@ router.post("/", async (req, res, next) => {
         return res.status(400).send('user email and password required');
     } else {
         try {
-            const savedUser = await userDAO.getUser(user.email);
+            const savedUser = await userDAO.getUserByEmail(user.email);
 
-            if(!savedUser) {
+            if (!savedUser) {
                 return res.status(401).send(`user with ${user.email} not found.`)
             }
             const isPasswordMatch = await bcrypt.compare(user.password, savedUser.password);
 
             if (isPasswordMatch) {
-                // create a jwt token with user email, _id, and roles
+                // create a jwt token with user _id, and roles valid for 2 hours
                 const token = jwtToken.sign({
                     _id: savedUser._id,
-                    email: savedUser.email,
                     roles: savedUser.roles,
-                    expiresIn: "2h"
-                }, 'secret');;
+                }, 'secret', { expiresIn: "2h" });;
 
                 return res.json({ token: token });
             } else {

@@ -6,7 +6,10 @@ const create = async (favoriteData) => {
 }
 
 // most specific has all the queries - all the other functions call this function with varying params
-const getByUserAndId = async (userId, favoriteId) => {
+const getByUserAndId = async (userId, favoriteId, page, perPage) => {
+    page = page ? Number(page) : 0;
+    perPage = perPage ? Number(perPage) : 10;
+
     let stage1 = {};
 
     // match favoriteId only
@@ -74,7 +77,7 @@ const getByUserAndId = async (userId, favoriteId) => {
             stage5,
             stage6,
             stage7
-        ]);
+        ]).sort({_id: 1}).skip(perPage * page).limit(perPage);
     } else {
         // have a matching stage on userId and/or favoriteId
         favoritesWithBooks = await Favorite.aggregate([
@@ -85,7 +88,7 @@ const getByUserAndId = async (userId, favoriteId) => {
             stage5,
             stage6,
             stage7
-        ]);
+        ]).sort({_id: 1}).skip(perPage * page).limit(perPage);
     }
 
     //console.log(`favoritesWithBooks - ${JSON.stringify(favoritesWithBooks)}`)
@@ -102,15 +105,15 @@ const getById = async (favoriteId) => {
 
 
 // only user id
-const getAllByUserId = async (userId) => {
-    const favoritesWithBooksForUser = await getByUserAndId(userId, '');
+const getAllByUserId = async (userId, page, perPage) => {
+    const favoritesWithBooksForUser = await getByUserAndId(userId, '', page, perPage);
 
     return favoritesWithBooksForUser;
 }
 
 // no user id or favorite id
-const getAll = async () => {
-    const favoritesWithBooks = await getByUserAndId('', '');
+const getAll = async (page, perPage) => {
+    const favoritesWithBooks = await getByUserAndId('', '', page, perPage);
 
     return favoritesWithBooks;
 }

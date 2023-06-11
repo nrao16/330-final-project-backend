@@ -79,14 +79,18 @@ router.get("/:id", async (req, res, next) => {
 //  Get all favorites 
 router.get("/", async (req, res, next) => {
     try {
+        let { page, perPage } = req.query;
+        page = page ? Number(page) : 0;
+        perPage = perPage ? Number(perPage) : 10;
+
         let favorites = [];
 
         // admin users can get any favorite collection
         if (req?.user?.roles?.includes('admin')) {
-            favorites = await favoriteDAO.getAll();
+            favorites = await favoriteDAO.getAll(page, perPage);
         } else {
             // non admin users can only get their own favorites
-            favorites = await favoriteDAO.getAllByUserId(req.user._id);
+            favorites = await favoriteDAO.getAllByUserId(req.user._id, page, perPage);
         }
         // can be 0 or more favorites
         return res.json(favorites);
@@ -103,7 +107,6 @@ router.put("/:id", async (req, res, next) => {
 
         // check if favorite id exists
         const favoriteExists = await favoriteDAO.getById(favoriteId);
-        console.log(`favoriteExists-${JSON.stringify(favoriteExists)}`)
 
         if (!favoriteExists || favoriteExists.length == 0) {
             return res.status(400).send(`Favorite Id ${favoriteId} not found.`);
@@ -170,7 +173,6 @@ router.delete("/:id", async (req, res, next) => {
 
         // check that favorite id exists
         const favoriteExists = await favoriteDAO.getById(favoriteId);
-        console.log(`favoriteExists-${favoriteExists}`);
 
         if (!favoriteExists || favoriteExists.length == 0) {
             return res.status(400).send(`Favorite Id ${favoriteId} not found.`);

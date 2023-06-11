@@ -4,18 +4,30 @@ const Author = require('../models/author');
 
 module.exports = {};
 
-module.exports.getAll = async (nameSearch, page, perPage) => {
+module.exports.getAll = async (authorName, dateOfBirth, nameSearch, page, perPage) => {
     // search in text index - match on author name and blurb
     if (nameSearch) {
         return await Author.find({
             $text: { $search: nameSearch }
         },
             { score: { $meta: 'textScore' } }
-        ).sort({ score: { $meta: 'textScore' } }).limit(perPage).skip(perPage * page).lean();
+        ).sort({ score: { $meta: 'textScore' } }).sort({name: 1}).skip(perPage * page).limit(perPage).lean();
 
+    } else if (authorName || dateOfBirth) {
+        // search on authorName and/or dateOfBirth
+        const findObj = {};
+        // case insensitive search on author name
+        if (authorName) {
+            findObj.name = { $regex: `${authorName}`, $options: 'i' };
+        }
+        //date of birth
+        if (dateOfBirth) {
+            findObj.dateOfBirth = dateOfBirth;
+        }
+        return await Author.find(findObj).sort({name: 1}).skip(perPage * page).limit(perPage).lean();
     } else {
         // return all authors
-        return await Author.find().limit(perPage).skip(perPage * page).lean();
+        return await Author.find().sort({name: 1}).skip(perPage * page).limit(perPage).lean();
     }
 }
 

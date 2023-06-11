@@ -7,10 +7,10 @@ const { search } = require('../routes/login');
 module.exports = {};
 
 // get all books optionally with search term - author details are included in response
-module.exports.getAll = async(searchText, page, perPage) => {
+module.exports.getAll = async (searchText, page, perPage) => {
 
     if (!searchText) {
-         // no search text so return all books
+        // no search text so return all books
         return await Book.aggregate(
             [
                 {
@@ -22,7 +22,7 @@ module.exports.getAll = async(searchText, page, perPage) => {
                     }
                 },
                 { $project: { 'author.__v': 0, '__v': 0 } }
-            ]).limit(perPage).skip(perPage * page);
+            ]).sort({title: 1}).skip(perPage * page).limit(perPage);
     }
     // match for matching search term
     else {
@@ -43,27 +43,28 @@ module.exports.getAll = async(searchText, page, perPage) => {
                     as: 'author'
                 }
             },
-            { $unwind: {path: "$author", preserveNullAndEmptyArrays: false } },
+            { $unwind: { path: "$author", preserveNullAndEmptyArrays: false } },
             { $project: { 'author.__v': 0, '__v': 0 } },
             {
                 $unionWith: {
                     coll: "books",
                     pipeline: [
                         {
-                            $lookup: { 
-                                from: 'authors', 
-                                localField:'authorId', 
-                                foreignField: '_id', 
-                                pipeline: [ 
-                                    {$match: {$expr: {$regexMatch: {input: "$name", regex: searchText, options: "i" } } } } ], 
-                                as: 'author'}
-                        }, 
-                        { $unwind: {path: "$author", preserveNullAndEmptyArrays: false } },
+                            $lookup: {
+                                from: 'authors',
+                                localField: 'authorId',
+                                foreignField: '_id',
+                                pipeline: [
+                                    { $match: { $expr: { $regexMatch: { input: "$name", regex: searchText, options: "i" } } } }],
+                                as: 'author'
+                            }
+                        },
+                        { $unwind: { path: "$author", preserveNullAndEmptyArrays: false } },
                         { $project: { 'author.__v': 0, '__v': 0 } }
-                    ]                
+                    ]
                 }
             }
-            ]);
+            ]).sort({title: 1}).skip(perPage * page).limit(perPage);
     }
 }
 
@@ -102,14 +103,24 @@ module.exports.updateById = async (bookId, newObj) => {
     return updatedBook;
 }
 
-// create book and author 
+// create book - either provide authorId or create new author
 module.exports.create = async (bookData) => {
-    // first create the author
-    const createdAuthor = await Author.create(bookData.author);
-    console.log(`createdAuthor - ${JSON.stringify(createdAuthor)}`)
+    if ((!bookData.authorId && !bookData.author) || await Book.findOne({ isbn: bookData.isbn })) {
+        return false;
+    }
+    let authorId;
+
+    if (!bookData.authorId && bookData.author) {
+        // first create the author
+        const createdAuthor = await Author.create(bookData.author);
+        console.log(`createdAuthor - ${JSON.stringify(createdAuthor)}`)
+        authorId = createdAuthor._id;
+    } else {
+        authorId = bookData.authorId;
+    }
 
     // create a new object with authorId and given book data
-    let bookWithAuthorId = { authorId: createdAuthor._id, ...bookData };
+    let bookWithAuthorId = { authorId: authorId, ...bookData };
 
     // remove author object from book data - we will not be inserting author details, just the authorId
     delete bookWithAuthorId.author;
