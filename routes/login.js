@@ -50,6 +50,7 @@ router.post("/", async (req, res, next) => {
                 // create a jwt token with user _id, and roles valid for 2 hours
                 const token = jwtToken.sign({
                     _id: savedUser._id,
+                    email: savedUser.email,
                     roles: savedUser.roles,
                 }, 'secret', { expiresIn: "2h" });;
 
