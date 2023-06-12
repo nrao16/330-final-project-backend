@@ -176,6 +176,46 @@ describe('/books', () => {
         expect(res.body).toMatchObject([{ ...savedBook1, author: { ...savedAuthor1 } }, { ...savedBook2, author: { ...savedAuthor2 } }]);
       });
 
+      it("should return matched book on title search to admin user", async () => {
+        const res = await request(server)
+          .get("/books?search=sherlock")
+          .set('Authorization', 'Bearer ' + adminToken)
+          .send();
+
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toMatchObject([{ ...savedBook2, author: { ...savedAuthor2 } }]);
+      });
+
+      it("should return matched book on genre search to admin user", async () => {
+        const res = await request(server)
+          .get("/books?search=fantasy")
+          .set('Authorization', 'Bearer ' + adminToken)
+          .send();
+
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toMatchObject([{ ...savedBook1, author: { ...savedAuthor1 } }]);
+      });
+
+      it("should return matched book on author name search to admin user", async () => {
+        const res = await request(server)
+          .get("/books?search=arthur")
+          .set('Authorization', 'Bearer ' + adminToken)
+          .send();
+
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toMatchObject([{ ...savedBook2, author: { ...savedAuthor2 } }]);
+      });
+
+      it("should return matched book on book summary search to admin user", async () => {
+        const res = await request(server)
+          .get("/books?search=prequel")
+          .set('Authorization', 'Bearer ' + adminToken)
+          .send();
+
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).toMatchObject([{ ...savedBook1, author: { ...savedAuthor1 } }]);
+      });
+
       it("should return array of 1 to normal user with perPage of 1", async () => {
         const res = await request(server)
           .get("/books?perPage=1")
@@ -310,8 +350,8 @@ describe('/books', () => {
           .put("/books/" + savedBook1._id)
           .set('Authorization', 'Bearer ' + adminToken)
           .send({ ...savedBook1, publishedYear: "a19ab" });
-          
-          expect(res.statusCode).toEqual(500);
+
+        expect(res.statusCode).toEqual(500);
       });
 
     });
@@ -334,34 +374,48 @@ describe('/books', () => {
         "publishedYear": 2008
       }
 
-      const newAuthor = {"name": "JK Rowling", gender: "F", dateOfBirth: "07/01/1965", blurb: "English writer of children and young adult fiction"};
-      
+      const newAuthor = { "name": "JK Rowling", gender: "F", dateOfBirth: "7/1/1965", blurb: "English writer of children and young adult fiction" };
+
       let newAuthorId;
-      let newBookId;
 
       it("should allow adding of book with author to admin user", async () => {
         const res = await request(server)
           .post("/books")
           .set('Authorization', 'Bearer ' + adminToken)
-          .send({...newBook, author: {...newAuthor}});
-          
-          expect(res.statusCode).toEqual(200);
-          
-          newBookId = res.body._id;
-          newAuthorId = res.body.authorId;
+          .send({ ...newBook, author: { ...newAuthor } });
+
+        expect(res.statusCode).toEqual(200);
+
+        let newBookId = res.body._id;
+        newAuthorId = res.body.authorId;
+
+        const res2 = await request(server)
+          .get("/books/" + newBookId)
+          .set('Authorization', 'Bearer ' + adminToken)
+          .send();
+
+        expect(res2.statusCode).toEqual(200);
+        expect(res2.body).toMatchObject({ ...newBook, author: { ...newAuthor } });
       });
 
       it("should allow adding of book with authorId to admin user", async () => {
-        const bookWithAuthorId = {...newBook2, authorId: newAuthorId};
+        const bookWithAuthorId = { ...newBook2, authorId: newAuthorId };
 
         const res = await request(server)
           .post("/books")
           .set('Authorization', 'Bearer ' + adminToken)
           .send(bookWithAuthorId);
-          
-          expect(res.statusCode).toEqual(200);
-          
-          console.log(`---------res.body- ${JSON.stringify(res.body)}`);
+
+        expect(res.statusCode).toEqual(200);
+        let newBookId = res.body._id;
+
+        const res2 = await request(server)
+        .get("/books/" + newBookId)
+        .set('Authorization', 'Bearer ' + adminToken)
+        .send();
+
+      expect(res2.statusCode).toEqual(200);
+      expect(res2.body).toMatchObject({ ...newBook2, author: { ...newAuthor } });
       });
 
 
@@ -369,16 +423,16 @@ describe('/books', () => {
         const res = await request(server)
           .post("/books")
           .set('Authorization', 'Bearer ' + token0)
-          .send({ ...newBook, author: { ...newAuthor} });
+          .send({ ...newBook, author: { ...newAuthor } });
 
-          expect(res.statusCode).toEqual(403);
+        expect(res.statusCode).toEqual(403);
       });
 
       it("should return 409 with a duplicate book isbn", async () => {
         const res = await request(server)
-        .post("/books")
-        .set('Authorization', 'Bearer ' + adminToken)
-        .send({...newBook, author: {...newAuthor}});
+          .post("/books")
+          .set('Authorization', 'Bearer ' + adminToken)
+          .send({ ...newBook, author: { ...newAuthor } });
 
         expect(res.statusCode).toEqual(409);
       });
@@ -396,7 +450,7 @@ describe('/books', () => {
         const res = await request(server)
           .post("/books")
           .set('Authorization', 'Bearer ' + adminToken)
-          .send({...newBook, isbn: 2525, title: null, author: {...newAuthor} });
+          .send({ ...newBook, isbn: 2525, title: null, author: { ...newAuthor } });
 
         expect(res.statusCode).toEqual(400);
       });
@@ -405,7 +459,7 @@ describe('/books', () => {
         const res = await request(server)
           .post("/books")
           .set('Authorization', 'Bearer ' + adminToken)
-          .send({...newBook, isbn: null, author: {...newAuthor} });
+          .send({ ...newBook, isbn: null, author: { ...newAuthor } });
 
         expect(res.statusCode).toEqual(400);
       });
@@ -414,7 +468,7 @@ describe('/books', () => {
         const res = await request(server)
           .post("/books")
           .set('Authorization', 'Bearer ' + adminToken)
-          .send({...newBook, isbn: 2525, publishedYear: null, author: {...newAuthor} });
+          .send({ ...newBook, isbn: 2525, publishedYear: null, author: { ...newAuthor } });
 
         expect(res.statusCode).toEqual(400);
       });
@@ -423,7 +477,7 @@ describe('/books', () => {
         const res = await request(server)
           .post("/books")
           .set('Authorization', 'Bearer ' + adminToken)
-          .send({...newBook, isbn: 2525 });
+          .send({ ...newBook, isbn: 2525 });
 
         expect(res.statusCode).toEqual(400);
       });
@@ -432,7 +486,7 @@ describe('/books', () => {
         const res = await request(server)
           .post("/books")
           .set('Authorization', 'Bearer ' + adminToken)
-          .send({...newBook, isbn: 2525, author: {...newAuthor, name: null}  });
+          .send({ ...newBook, isbn: 2525, author: { ...newAuthor, name: null } });
 
         expect(res.statusCode).toEqual(400);
       });
@@ -442,18 +496,18 @@ describe('/books', () => {
         const res = await request(server)
           .post("/books")
           .set('Authorization', 'Bearer ' + adminToken)
-          .send({...newBook, isbn: 2525, authorId: '6484fe04b7bff38582c53747'  });
+          .send({ ...newBook, isbn: 2525, authorId: '6484fe04b7bff38582c53747' });
 
         expect(res.statusCode).toEqual(400);
       });
 
       it("should return 500 with a bad year", async () => {
         const res = await request(server)
-          .post("/books" )
+          .post("/books")
           .set('Authorization', 'Bearer ' + adminToken)
-          .send({...newBook, isbn: 1212, publishedYear: 'aaa', author: {...newAuthor}});
-          
-          expect(res.statusCode).toEqual(500);
+          .send({ ...newBook, isbn: 1212, publishedYear: 'aaa', author: { ...newAuthor } });
+
+        expect(res.statusCode).toEqual(500);
       });
 
     });
