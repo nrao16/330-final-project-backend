@@ -21,8 +21,9 @@ module.exports.getAll = async (searchText, page, perPage) => {
                         as: 'author'
                     }
                 },
-                { $project: { 'author.__v': 0, '__v': 0 } }
-            ]).sort({title: 1}).skip(perPage * page).limit(perPage);
+                { $unwind: { path: "$author", preserveNullAndEmptyArrays: false } },
+                { $project: { 'author.__v': 0, '__v': 0, } }
+            ]).sort({ title: 1 }).skip(perPage * page).limit(perPage);
     }
     // match for matching search term
     else {
@@ -64,7 +65,7 @@ module.exports.getAll = async (searchText, page, perPage) => {
                     ]
                 }
             }
-            ]).sort({title: 1}).skip(perPage * page).limit(perPage);
+            ]).sort({ title: 1 }).skip(perPage * page).limit(perPage);
     }
 }
 
@@ -87,6 +88,7 @@ module.exports.getById = async (bookId) => {
                 as: 'author'
             }
         },
+        { $unwind: { path: "$author", preserveNullAndEmptyArrays: false } },
         { $project: { 'author.__v': 0, '__v': 0 } }
         ]);
 }
@@ -105,9 +107,16 @@ module.exports.updateById = async (bookId, newObj) => {
 
 // create book - either provide authorId or create new author
 module.exports.create = async (bookData) => {
-    if ((!bookData.authorId && !bookData.author) || await Book.findOne({ isbn: bookData.isbn })) {
+    if ((!bookData.authorId && !bookData.author) ) {
         return false;
     }
+
+    const isbnExists = await Book.findOne({ isbn: bookData.isbn });
+
+    if(isbnExists) {
+        throw new Error('dup key');
+    }
+    
     let authorId;
 
     if (!bookData.authorId && bookData.author) {

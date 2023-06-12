@@ -35,11 +35,12 @@ router.post("/", isAdmin, async (req, res, next) => {
 // Get single book for given book id
 router.get("/:id", async (req, res, next) => {
     try {
-        const bookExists = await bookDAO.getById(req.params.id);
+        let bookExists = await bookDAO.getById(req.params.id);
         if (!bookExists || bookExists.length == 0) {
             return res.status(400).send(`Book Id ${req.params.id} not found.`);
         } else {
-            return res.json(bookExists);
+            bookExists[0].author.dateOfBirth = bookExists[0].author.dateOfBirth?.toLocaleDateString();
+            return res.json(bookExists[0]);
         }
     } catch (e) {
         next(e);
@@ -55,7 +56,8 @@ router.get("/", async (req, res, next) => {
         let books = [];
 
         books = await bookDAO.getAll(search, page, perPage);
-        return res.json(books);
+        const dobUpdatedBooks = books.map(book => { book.author.dateOfBirth = book.author.dateOfBirth?.toLocaleDateString(); return book });
+        return res.json(dobUpdatedBooks);
     } catch (e) {
         next(e);
     }
