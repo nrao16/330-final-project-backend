@@ -105,6 +105,8 @@ describe('/books', () => {
 
     let savedAuthor1;
     let savedBook1;
+    let savedAuthor2;
+    let savedBook2;
 
     // add an author and associate it with book
     beforeAll(async () => {
