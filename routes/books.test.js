@@ -29,7 +29,7 @@ describe('/books', () => {
 
   let testBook2 = {
     "title": "Sherlock Holmes",
-    "genre": "Detective",
+    "genre": "private eye",
     "isbn": "777",
     "summary": "Ace detective solving crimes",
     "publishedYear": 1887
@@ -38,8 +38,8 @@ describe('/books', () => {
   let testAuthor2 = {
     name: "Arthur Conan Doyle",
     gender: "Male",
-    dateOfBirth: "11/15/1975",
-    blurb: "Detective novels"
+    dateOfBirth: "2/25/1852",
+    blurb: "English novelist"
   }
 
   describe('Before login', () => {

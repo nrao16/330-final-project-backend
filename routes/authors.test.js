@@ -16,10 +16,10 @@ describe("/authors", () => {
     };
 
     let testAuthorComplete = {
-        name: "Arthur Conan Doyle",
+        name: "AC Doyle",
         gender: "Male",
         dateOfBirth: "11/15/1975",
-        blurb: "Detective series set in London, UK"
+        blurb: "Murder mystery novelist"
     }
 
     describe('Before login', () => {
@@ -126,7 +126,7 @@ describe("/authors", () => {
 
             it("should return author to admin user with text search", async () => {
                 const res = await request(server)
-                .get("/authors?search='detective'")
+                .get("/authors?search='murder'")
                 .set('Authorization', 'Bearer ' + adminToken)
                 .send();
 
@@ -146,7 +146,7 @@ describe("/authors", () => {
 
             it("should return author to admin user with authorName", async () => {
                 const res = await request(server)
-                .get("/authors?authorName=Arthur")
+                .get("/authors?authorName=doyle")
                 .set('Authorization', 'Bearer ' + adminToken)
                 .send();
 
@@ -156,7 +156,7 @@ describe("/authors", () => {
             
             it("should return author to admin user with dateOfBirth and authorName", async () => {
                 const res = await request(server)
-                .get("/authors?dateOfBirth='11/15/1975'&authorName=Arthur")
+                .get("/authors?dateOfBirth='11/15/1975'&authorName=Doyle")
                 .set('Authorization', 'Bearer ' + adminToken)
                 .send();
 
