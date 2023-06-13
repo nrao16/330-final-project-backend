@@ -257,7 +257,7 @@ describe('/favorites', () => {
         });
 
         describe("GET /:id", () => {
-            it("should return all favorites to admin user even if not own favorites", async () => {
+            it("should return favorites to admin user even if not own favorites", async () => {
                 const res = await request(server)
                     .get("/favorites")
                     .set('Authorization', 'Bearer ' + adminToken)
@@ -414,6 +414,69 @@ describe('/favorites', () => {
 
             });
 
+            it("should allow deleting of other user's favorites to admin user", async () => {
+                const newFavorites1 = [savedBook1._id, savedBook2._id];
+                const res = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send(newFavorites1);
+
+                expect(res.statusCode).toEqual(200);
+                let newFavoriteId = res.body._id;
+                let favoriteUserId = res.body.userId;
+
+                const res2 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send();
+
+                expect(res2.statusCode).toEqual(200);
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook1, author: { ...savedAuthor1 } }, { ...savedBook2, author: { ...savedAuthor2 } }] });
+
+                const res3 = await request(server)
+                    .delete("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send();
+
+                expect(res3.statusCode).toEqual(200);
+
+                const res4 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send();
+
+                expect(res4.statusCode).toEqual(400);
+
+            });
+
+            it("should not allow deleting of other user's favorites to normal user", async () => {
+                const newFavorites1 = [savedBook1._id, savedBook2._id];
+                const res = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send(newFavorites1);
+
+                expect(res.statusCode).toEqual(200);
+                let newFavoriteId = res.body._id;
+                let favoriteUserId = res.body.userId;
+
+                const res2 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send();
+
+                expect(res2.statusCode).toEqual(200);
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook1, author: { ...savedAuthor1 } }, { ...savedBook2, author: { ...savedAuthor2 } }] });
+
+                const res3 = await request(server)
+                    .delete("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send();
+
+                expect(res3.statusCode).toEqual(400);
+
+            });
+
             it("should allow deleting of favorites to normal user", async () => {
                 const newFavorites = [savedBook3._id];
                 const res = await request(server)
@@ -494,6 +557,68 @@ describe('/favorites', () => {
 
                 expect(res4.statusCode).toEqual(200);
                 expect(res4.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook1, author: { ...savedAuthor1 } }] });
+            });
+
+            it("should allow updating of other user's favorites to admin user", async () => {
+                const newFavorites1 = [savedBook1._id, savedBook2._id];
+                const res = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send(newFavorites1);
+
+                expect(res.statusCode).toEqual(200);
+                let newFavoriteId = res.body._id;
+                let favoriteUserId = res.body.userId;
+
+                const res2 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send();
+
+                expect(res2.statusCode).toEqual(200);
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook1, author: { ...savedAuthor1 } }, { ...savedBook2, author: { ...savedAuthor2 } }] });
+
+                const res3 = await request(server)
+                    .put("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send([savedBook1._id]);
+
+                expect(res3.statusCode).toEqual(200);
+
+                const res4 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send();
+
+                expect(res4.statusCode).toEqual(200);
+                expect(res4.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook1, author: { ...savedAuthor1 } }] });
+            });
+
+            it("should not allow updating of other user's favorites to normal user", async () => {
+                const newFavorites1 = [savedBook1._id, savedBook2._id];
+                const res = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send(newFavorites1);
+
+                expect(res.statusCode).toEqual(200);
+                let newFavoriteId = res.body._id;
+                let favoriteUserId = res.body.userId;
+
+                const res2 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send();
+
+                expect(res2.statusCode).toEqual(200);
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook1, author: { ...savedAuthor1 } }, { ...savedBook2, author: { ...savedAuthor2 } }] });
+
+                const res3 = await request(server)
+                    .put("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send([savedBook1._id]);
+
+                expect(res3.statusCode).toEqual(400);    
             });
 
             it("should allow updating of favorites to admin user while ignoring duplicate ids", async () => {
