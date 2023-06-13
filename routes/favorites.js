@@ -15,7 +15,7 @@ router.post("/", async (req, res, next) => {
         const favoriteBooks = req.body;
 
         // at least 1 book id is required
-        if (!favoriteBooks || !favoriteBooks.length === 0 ||
+        if (!favoriteBooks || favoriteBooks.length === 0 ||
             favoriteBooks.some(id => id === null)) {
             return res.status(400).send('Book id is required and has to be valid.');
         }
@@ -114,7 +114,7 @@ router.put("/:id", async (req, res, next) => {
 
         // need at least 1 book id
         const favoriteBooks = req.body;
-        if (!favoriteBooks || !favoriteBooks.length === 0 ||
+        if (!favoriteBooks || favoriteBooks.length === 0 ||
             favoriteBooks.some(id => id === null)) {
             return res.status(400).send('At least 1 Book id is required and has to be valid.');
         }
@@ -149,7 +149,6 @@ router.put("/:id", async (req, res, next) => {
                 updatedFavorite = await favoriteDAO.updateByUserAndId(req.user._id, favoriteId, favoriteObj);
             }
 
-            console.log(`updatedFavorite - ${JSON.stringify(updatedFavorite)}`);
             // no match means that user/favorite id combo was not found
             if (!updatedFavorite || updatedFavorite.matchedCount === 0) {
                 return res.status(400).send(`Favorite Id ${favoriteId} not found in your collection.`);
@@ -186,7 +185,6 @@ router.delete("/:id", async (req, res, next) => {
             // non admin users can only delete their own favorites
             deletedFavorite = await favoriteDAO.removeFavoriteByUserAndId(req.user._id, req.params.id);
         }
-        console.log(`deletedFavorite - ${JSON.stringify(deletedFavorite)}`);
 
         // no delete means that user/favorite id combo was not found
         if (!deletedFavorite || deletedFavorite.deletedCount === 0) {

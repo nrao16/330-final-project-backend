@@ -90,8 +90,6 @@ const getByUserAndId = async (userId, favoriteId, page, perPage) => {
             stage7
         ]).sort({_id: 1}).skip(perPage * page).limit(perPage);
     }
-
-    //console.log(`favoritesWithBooks - ${JSON.stringify(favoritesWithBooks)}`)
     return favoritesWithBooks;
 }
 

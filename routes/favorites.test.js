@@ -146,10 +146,10 @@ describe('/favorites', () => {
         let savedAuthor3;
 
         // add an author and associate it with book
-        beforeAll(async () => {
+        beforeEach(async () => {
+
             savedAuthor1 = (await Author.create(testAuthor1)).toJSON();
             savedBook1 = (await Book.create({ ...testBook1, authorId: savedAuthor1._id })).toJSON();
-            console.log(`savedBook1 - ${JSON.stringify(savedBook1)}`);
 
             savedAuthor1._id = savedAuthor1._id.toString();
             delete savedAuthor1.__v;
@@ -171,23 +171,18 @@ describe('/favorites', () => {
 
             savedAuthor3._id = savedAuthor3._id.toString();
             delete savedAuthor3.__v;
-            // savedAuthor3.dateOfBirth = savedAuthor3.dateOfBirth;
+
             savedBook3._id = savedBook3._id.toString();
             savedBook3.authorId = savedBook3.authorId.toString();
             delete savedBook3.__v;
-
-            console.log(`savedAuthor1 - ${JSON.stringify(savedAuthor1)}`);
-            console.log(`savedBook1 - ${JSON.stringify(savedBook1)}`);
         });
 
-        afterAll(testUtils.clearDB);
-
         const user0 = {
-            email: 'user0@mail.com',
+            email: 'user2323@mail.com',
             password: '123password'
         };
         const user1 = {
-            email: 'user1@mail.com',
+            email: 'user4343@mail.com',
             password: '456password'
         }
         let token0;
@@ -203,15 +198,102 @@ describe('/favorites', () => {
         });
 
         describe("GET /", () => {
-            it("should return empty array if no favorites to normal user", async () => {
+            it("should return empty array if no favorites belonging to own user", async () => {
+                const newFavorites1 = [savedBook1._id, savedBook2._id];
                 const res = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send(newFavorites1);
+
+                expect(res.statusCode).toEqual(200);
+                let newFavoriteId = res.body._id;
+                let favoriteUserId = res.body.userId;
+
+                const res2 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send();
+
+                expect(res2.statusCode).toEqual(200);
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook1, author: { ...savedAuthor1 } }, { ...savedBook2, author: { ...savedAuthor2 } }] });
+
+                const res3 = await request(server)
                     .get("/favorites")
                     .set('Authorization', 'Bearer ' + token0)
                     .send();
 
+                expect(res3.statusCode).toEqual(200);
+                expect(res3.body).toMatchObject([]);
+            });
+
+            it("should return all favorites to admin user even if not own favorites", async () => {
+                const res = await request(server)
+                    .get("/favorites")
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send();
+
                 expect(res.statusCode).toEqual(200);
                 expect(res.body).toMatchObject([]);
+
+                const newFavorites = [savedBook3._id];
+                const res1 = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send(newFavorites);
+
+                expect(res1.statusCode).toEqual(200);
+                let newFavoriteId = res1.body._id;
+                let favoriteUserId = res1.body.userId;
+
+                const res2 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send();
+
+                expect(res2.statusCode).toEqual(200);
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook3, author: { ...savedAuthor3 } }] });
             });
+
+        });
+
+        describe("GET /:id", () => {
+            it("should return all favorites to admin user even if not own favorites", async () => {
+                const res = await request(server)
+                    .get("/favorites")
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send();
+
+                expect(res.statusCode).toEqual(200);
+                expect(res.body).toMatchObject([]);
+
+                const newFavorites = [savedBook3._id];
+                const res1 = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send(newFavorites);
+
+                expect(res1.statusCode).toEqual(200);
+                let newFavoriteId = res1.body._id;
+                let favoriteUserId = res1.body.userId;
+
+                const res2 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send();
+
+                expect(res2.statusCode).toEqual(200);
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook3, author: { ...savedAuthor3 } }] });
+            });
+
+            it("should return 400 if incorrect favorite id", async () => {
+                const res3 = await request(server)
+                    .get("/favorites/123")
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send();
+
+                expect(res3.statusCode).toEqual(400);
+            });
+
         });
 
         describe("POST /", () => {
@@ -226,16 +308,13 @@ describe('/favorites', () => {
                 let newFavoriteId = res.body._id;
                 let favoriteUserId = res.body.userId;
 
-                console.log(`res.body - ${JSON.stringify(res.body)}`)
-
                 const res2 = await request(server)
                     .get("/favorites/" + newFavoriteId)
                     .set('Authorization', 'Bearer ' + adminToken)
                     .send();
 
                 expect(res2.statusCode).toEqual(200);
-                console.log(`res2.body - ${JSON.stringify(res2.body)}`)
-                expect(res2.body).toMatchObject({_id: newFavoriteId, userId: favoriteUserId, books:[{...savedBook1, author: {...savedAuthor1}}, {...savedBook2, author: {...savedAuthor2}}]});
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook1, author: { ...savedAuthor1 } }, { ...savedBook2, author: { ...savedAuthor2 } }] });
             });
 
             it("should allow adding of favorites to normal user", async () => {
@@ -249,7 +328,25 @@ describe('/favorites', () => {
                 let newFavoriteId = res.body._id;
                 let favoriteUserId = res.body.userId;
 
-                console.log(`res.body - ${JSON.stringify(res.body)}`)
+                const res2 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send();
+
+                expect(res2.statusCode).toEqual(200);
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook3, author: { ...savedAuthor3 } }] });
+            });
+
+            it("should allow ignore duplicate book ids when creating favorites", async () => {
+                const newFavorites = [savedBook3._id, savedBook3._id];
+                const res = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send(newFavorites);
+
+                expect(res.statusCode).toEqual(200);
+                let newFavoriteId = res.body._id;
+                let favoriteUserId = res.body.userId;
 
                 const res2 = await request(server)
                     .get("/favorites/" + newFavoriteId)
@@ -257,8 +354,26 @@ describe('/favorites', () => {
                     .send();
 
                 expect(res2.statusCode).toEqual(200);
-                console.log(`res2.body - ${JSON.stringify(res2.body)}`)
-                expect(res2.body).toMatchObject({_id: newFavoriteId, userId: favoriteUserId, books:[{...savedBook3, author: {...savedAuthor3}}]});
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook3, author: { ...savedAuthor3 } }] });
+            });
+
+            it("should return 400 with a empty array", async () => {
+                const res = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send([]);
+
+                expect(res.statusCode).toEqual(400);
+            });
+
+            it("should return 400 with a invalid book id", async () => {
+                const res = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send([savedBook1._id, 123]);
+
+                expect(res.statusCode).toEqual(400);
+
             });
 
         });
@@ -275,16 +390,13 @@ describe('/favorites', () => {
                 let newFavoriteId = res.body._id;
                 let favoriteUserId = res.body.userId;
 
-                console.log(`res.body - ${JSON.stringify(res.body)}`)
-
                 const res2 = await request(server)
                     .get("/favorites/" + newFavoriteId)
                     .set('Authorization', 'Bearer ' + adminToken)
                     .send();
 
                 expect(res2.statusCode).toEqual(200);
-                console.log(`res2.body - ${JSON.stringify(res2.body)}`)
-                expect(res2.body).toMatchObject({_id: newFavoriteId, userId: favoriteUserId, books:[{...savedBook1, author: {...savedAuthor1}}, {...savedBook2, author: {...savedAuthor2}}]});
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook1, author: { ...savedAuthor1 } }, { ...savedBook2, author: { ...savedAuthor2 } }] });
 
                 const res3 = await request(server)
                     .delete("/favorites/" + newFavoriteId)
@@ -298,7 +410,7 @@ describe('/favorites', () => {
                     .set('Authorization', 'Bearer ' + adminToken)
                     .send();
 
-                expect(res4.statusCode).toEqual(400);                
+                expect(res4.statusCode).toEqual(400);
 
             });
 
@@ -313,16 +425,13 @@ describe('/favorites', () => {
                 let newFavoriteId = res.body._id;
                 let favoriteUserId = res.body.userId;
 
-                console.log(`res.body - ${JSON.stringify(res.body)}`)
-
                 const res2 = await request(server)
                     .get("/favorites/" + newFavoriteId)
                     .set('Authorization', 'Bearer ' + token0)
                     .send();
 
                 expect(res2.statusCode).toEqual(200);
-                console.log(`res2.body - ${JSON.stringify(res2.body)}`)
-                expect(res2.body).toMatchObject({_id: newFavoriteId, userId: favoriteUserId, books:[{...savedBook3, author: {...savedAuthor3}}]});
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook3, author: { ...savedAuthor3 } }] });
 
                 const res3 = await request(server)
                     .delete("/favorites/" + newFavoriteId)
@@ -337,7 +446,170 @@ describe('/favorites', () => {
                     .send();
 
                 expect(res4.statusCode).toEqual(400);
-                
+
+            });
+
+            it("should return 400 with a incorrect favorite id", async () => {
+                const res1 = await request(server)
+                    .delete("/favorites/123")
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send([savedBook1._id]);
+
+                expect(res1.statusCode).toEqual(400);
+            });
+
+
+        });
+        describe("PUT /:id", () => {
+            it("should allow updating of favorites to admin user", async () => {
+                const newFavorites1 = [savedBook1._id, savedBook2._id];
+                const res = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send(newFavorites1);
+
+                expect(res.statusCode).toEqual(200);
+                let newFavoriteId = res.body._id;
+                let favoriteUserId = res.body.userId;
+
+                const res2 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send();
+
+                expect(res2.statusCode).toEqual(200);
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook1, author: { ...savedAuthor1 } }, { ...savedBook2, author: { ...savedAuthor2 } }] });
+
+                const res3 = await request(server)
+                    .put("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send([savedBook1._id]);
+
+                expect(res3.statusCode).toEqual(200);
+
+                const res4 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send();
+
+                expect(res4.statusCode).toEqual(200);
+                expect(res4.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook1, author: { ...savedAuthor1 } }] });
+            });
+
+            it("should allow updating of favorites to admin user while ignoring duplicate ids", async () => {
+                const newFavorites1 = [savedBook1._id, savedBook2._id, savedBook1._id];
+                const res = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send(newFavorites1);
+
+                expect(res.statusCode).toEqual(200);
+                let newFavoriteId = res.body._id;
+                let favoriteUserId = res.body.userId;
+
+                const res2 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send();
+
+                expect(res2.statusCode).toEqual(200);
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook1, author: { ...savedAuthor1 } }, { ...savedBook2, author: { ...savedAuthor2 } }] });
+
+                const res3 = await request(server)
+                    .put("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send([savedBook1._id]);
+
+                expect(res3.statusCode).toEqual(200);
+
+                const res4 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send();
+
+                expect(res4.statusCode).toEqual(200);
+                expect(res4.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook1, author: { ...savedAuthor1 } }] });
+            });
+
+            it("should allow updating of favorites to normal user", async () => {
+                const newFavorites = [savedBook3._id];
+                const res = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send(newFavorites);
+
+                expect(res.statusCode).toEqual(200);
+                let newFavoriteId = res.body._id;
+                let favoriteUserId = res.body.userId;
+
+                const res2 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send();
+
+                expect(res2.statusCode).toEqual(200);
+                expect(res2.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook3, author: { ...savedAuthor3 } }] });
+
+                const res3 = await request(server)
+                    .put("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send([savedBook2._id]);
+
+                expect(res3.statusCode).toEqual(200);
+
+                const res4 = await request(server)
+                    .get("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send();
+
+                expect(res4.statusCode).toEqual(200);
+                expect(res4.body).toMatchObject({ _id: newFavoriteId, userId: favoriteUserId, books: [{ ...savedBook2, author: { ...savedAuthor2 } }] });
+
+            });
+
+            it("should return 400 with a incorrect favorite id", async () => {
+                const res1 = await request(server)
+                    .put("/favorites/123")
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send([savedBook1._id]);
+
+                expect(res1.statusCode).toEqual(400);
+            });
+
+            it("should return 400 with a empty array", async () => {
+                const newFavorites = [savedBook3._id];
+                const res = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send(newFavorites);
+
+                expect(res.statusCode).toEqual(200);
+                let newFavoriteId = res.body._id;
+
+                const res2 = await request(server)
+                    .put("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send([]);
+
+                expect(res2.statusCode).toEqual(400);
+            });
+
+            it("should return 400 with a invalid book id", async () => {
+                const newFavorites = [savedBook3._id];
+                const res = await request(server)
+                    .post("/favorites")
+                    .set('Authorization', 'Bearer ' + token0)
+                    .send(newFavorites);
+
+                expect(res.statusCode).toEqual(200);
+                let newFavoriteId = res.body._id;
+
+                const res2 = await request(server)
+                    .put("/favorites/" + newFavoriteId)
+                    .set('Authorization', 'Bearer ' + adminToken)
+                    .send([savedBook1._id, 555]);
+
+                expect(res2.statusCode).toEqual(400);
             });
 
         });

@@ -69,25 +69,21 @@ describe("/authors", () => {
         let savedAuthorMinimal;
         
         // add 2 authors
-        beforeAll(async () => {      
+        beforeEach(async () => {      
             savedAuthorMinimal = (await Author.create(testAuthorMinimal)).toJSON();
             savedAuthorComplete = (await Author.create(testAuthorComplete)).toJSON();           
 
             savedAuthorComplete._id = savedAuthorComplete._id.toString();
             savedAuthorComplete.dateOfBirth = savedAuthorComplete.dateOfBirth?.toLocaleDateString();
-            savedAuthorMinimal._id = savedAuthorMinimal._id.toString();
-            // console.log(`savedAuthorMinimal - ${JSON.stringify(savedAuthorMinimal)}`);
-            // console.log(`savedAuthorComplete - ${JSON.stringify(savedAuthorComplete)}`);            
+            savedAuthorMinimal._id = savedAuthorMinimal._id.toString();         
         });
-
-        afterAll(testUtils.clearDB);
         
         const user0 = {
-            email: 'user0@mail.com',
+            email: 'user1010@mail.com',
             password: '123password'
         };
         const user1 = {
-            email: 'user1@mail.com',
+            email: 'user2020@mail.com',
             password: '456password'
         }
         let token0;
@@ -241,8 +237,6 @@ describe("/authors", () => {
                 .send();
 
                 expect(res.statusCode).toEqual(200);
-                // console.log(`savedAuthorComplete-${JSON.stringify(savedAuthorComplete)},
-                // res.body- ${JSON.stringify(res.body)}`)
                 expect(res.body).toMatchObject(savedAuthorComplete);
             });
 

@@ -109,7 +109,7 @@ describe('/books', () => {
     let savedBook2;
 
     // add an author and associate it with book
-    beforeAll(async () => {
+    beforeEach(async () => {
       savedAuthor1 = (await Author.create(testAuthor1)).toJSON();
       savedBook1 = (await Book.create({ ...testBook1, authorId: savedAuthor1._id })).toJSON();
 
@@ -128,20 +128,16 @@ describe('/books', () => {
       savedAuthor2.dateOfBirth = savedAuthor2.dateOfBirth?.toLocaleDateString();
       savedBook2._id = savedBook2._id.toString();
       savedBook2.authorId = savedBook2.authorId.toString();
-      delete savedBook2.__v;
-
-      // console.log(`savedAuthor1 - ${JSON.stringify(savedAuthor1)}`);
-      // console.log(`savedBook1 - ${JSON.stringify(savedBook1)}`);            
+      delete savedBook2.__v;          
     });
 
-    afterAll(testUtils.clearDB);
 
     const user0 = {
-      email: 'user0@mail.com',
+      email: 'user567@mail.com',
       password: '123password'
     };
     const user1 = {
-      email: 'user1@mail.com',
+      email: 'user890@mail.com',
       password: '456password'
     }
     let token0;
@@ -401,7 +397,8 @@ describe('/books', () => {
       });
 
       it("should allow adding of book with authorId to admin user", async () => {
-        const bookWithAuthorId = { ...newBook2, authorId: newAuthorId };
+        
+        const bookWithAuthorId = { ...newBook2, authorId: savedAuthor1._id.toString() };
 
         const res = await request(server)
           .post("/books")
@@ -417,7 +414,7 @@ describe('/books', () => {
         .send();
 
       expect(res2.statusCode).toEqual(200);
-      expect(res2.body).toMatchObject({ ...newBook2, author: { ...newAuthor } });
+      expect(res2.body).toMatchObject({ ...newBook2, author: { ...savedAuthor1 } });
       });
 
 
@@ -434,7 +431,7 @@ describe('/books', () => {
         const res = await request(server)
           .post("/books")
           .set('Authorization', 'Bearer ' + adminToken)
-          .send({ ...newBook, author: { ...newAuthor } });
+          .send({ ...savedBook1, author: { ...newAuthor } });
 
         expect(res.statusCode).toEqual(409);
       });

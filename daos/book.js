@@ -121,7 +121,6 @@ module.exports.create = async (bookData) => {
     if (!bookData.authorId && bookData.author) {
         // first create the author
         const createdAuthor = await Author.create(bookData.author);
-        console.log(`createdAuthor - ${JSON.stringify(createdAuthor)}`)
         authorId = createdAuthor._id;
     } else {
         authorId = bookData.authorId;
@@ -134,6 +133,5 @@ module.exports.create = async (bookData) => {
     delete bookWithAuthorId.author;
 
     const created = await Book.create(bookWithAuthorId);
-    console.log(`createdBook - ${JSON.stringify(created)}`);
     return created;
 }
