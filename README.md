@@ -116,5 +116,20 @@ Total 3 weeks for project submission on June 18th.
     
 ### Self Evaluation
 - What worked
+    - Lots of great examples from classwork and assignments to get framework started - including auth and error handling middleware.
+    - Initial project design helped with building out the models, daos, and routes. I referred to my README often to help keep me from scope creep.
+    - Using mongosh to try out complex queries, having MongoDB Compass to visually see the collections and documents.
+    - Using Postman to test out all the routes.
+    - Jest examples from assignments really helped create my tests.
 - What didn't work
+    - MongoDB queries are harder than I thought, it was difficult to get nested searches and lookups working correctly. I had to use mongosh to test out portions and put it together. The documentation was also not as easy to find as SQL queries.
+    - The author and book co-dependency was a little hard to design. Ideally, I should have had ways to get books from authors and authors from books. Since I didn't start off with that design, the API is not as flexible as it should be be.  
+    - Could not figure out a good way to uniquely identify an author. 
+    - Could not get my git workflow yaml to work with pull requests. 
 - Lessons learnt
+   - MongoDB collections are not similar to relational databases, it would probably have been better to have authors collections within book collections.
+   - Got lot more practice with MongoDB and Jest.
+   - I see the value now in creating Jest tests earlier during development. It ended up being a lot of work to create all the tests at the end. I caught a couple of bugs through my tests.
+   - Incorporating an external API would be useful to check ISBN or author information.
+   - It was a great experience building the APIs end to end - gives me more confidence in designing and implementing more node.js applications.
+
