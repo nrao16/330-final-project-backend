@@ -1,6 +1,12 @@
 # 330-final-project-backend
 Final project for 330 course using nodejs/express/mongodb
 
+*------- POC UPDATE-------*
+- All models, daos, routes, middleware, postman tests for all routes and login jest test done.
+- Need to work on jest tests for authors, books, favorites. 
+
+*--------------------------*
+
 ## Scenario
 This is a continuation of the project theme that I submitted for my React course. 
 I would like users to be able to create lists of favorite books that are associated with their account (based on email address) and perform additions/deletions/updates to their favorite lists. In the UI, the book lists were from the New York Times bestseller lists and users were able to favorite them to add them to a firebase db. 
@@ -39,12 +45,12 @@ In addition to the signup/login route, there will 3 additional routes to access 
             - Takes an array of book _id values (duplicates are ignored). This list is associated with the user id from the jwt token and stored in their favorites collection. In case of any invalid book ids, nothing will be created and a 400 error will be returned. 
         - Get a specific list of favorite books: `GET /favorites/:id` - open to all users
             - Returns book and author details of all books associated with favorites _id.
-            - Return a 404 if favorites _id is not associated with token user id. An admin user should be able to see any list of favorites.
+            - Return a 400 if favorites _id is not associated with token user id. An admin user should be able to see any list of favorites.
         - Update list of favorite books: `PUT /favorites/:id` - open to all users
             - This list of book ids will replace existing list associated with favorites _id. 
-            - Return a 404 if favorites _id is not associated with token user id. An admin user should be able to update any list.
+            - Return a 400 if favorites _id is not associated with token user id. An admin user should be able to update any list.
         - Delete list of favorite books: `DELETE /favorites/:id` - open to all users
-            - Return a 404 if favorites _id is not associated with token user id. An admin user should be able to delete any list.
+            - Return a 400 if favorites _id is not associated with token user id. An admin user should be able to delete any list.
         - Get all favorite lists: `GET /favorites` 
             - return all favorite lists created by the user making the request if not an admin user. If an admin user, return all favorite lists in the DB.
     - books (requires authentication)
@@ -83,32 +89,47 @@ Total 3 weeks for project submission on June 18th.
     - [x] Create package.json and install - `npm install`
     - [x] Test initial install by running project - `npm start`
     - [x] Create project structure with directories for daos, models, routes, middleware; create index.js
-    - [ ] Create user model - email should be unique
-    - [ ] user DAO
-    - [ ] Create middleware with bearer token and role checking
-    - [ ] Create login route
-    - [ ] Create postman project and test login route with Postman
-    - [ ] Create jest tests for login route - Valid signup, login, password update. Invalid signup (duplicate email), invalid login, invalid password update with 404 situations.
+    - [x] Create user model - email should be unique
+    - [x] user DAO
+    - [x] Create middleware with bearer token and role checking
+    - [x] Create login route
+    - [x] Create postman project and test login route with Postman
+    - [X] Create jest tests for login route - Valid signup, login, password update. Invalid signup (duplicate email), invalid login, invalid password update with 401 situations.
 - Week 7 - 8 - Create books, authors, favorites models, daos, routes, create jest tests for routes.
-    - [ ] Create book model with text indexes on title, genre, summary. isbn should be unique.
-    - [ ] Create book DAO
-    - [ ] Create author model with text index on name
-    - [ ] Create author DAO
-    - [ ] Create books route and test with Postman
-    - [ ] Create authors route and test with Postman
-    - [ ] Create favorite model
-    - [ ] Create favorite DAO
-    - [ ] Create favorites route and test with Postman
-    - [ ] Create jest tests for books route - Valid CRU based on roles. Unauthorized access to perform create and updates. 
-    - [ ] Submit prototype/proof of concept with all routes working with basic operations.
+    - [x] Create book model with text indexes on title, genre, summary. isbn should be unique.
+    - [x] Create book DAO
+    - [x] Create author model with text index on name
+    - [x] Create author DAO
+    - [x] Create books route and test with Postman
+    - [x] Create authors route and test with Postman
+    - [x] Create favorite model
+    - [x] Create favorite DAO
+    - [x] Create favorites route and test with Postman
+    - [x] Create jest tests for books route - Valid CRU based on roles. Unauthorized access to perform create and updates. 
+    - [x] Submit prototype/proof of concept with all routes working with basic operations.
 - Week 8 - 9 - create jest tests. Test overall project and prep for presentation.
-    - [ ] Create jest tests for authors route - Valid RU based on roles. Unauthorized access to perform updates.
-    - [ ] Create jest tests for favorites route - Valid CRUD based on roles. Unauthorized access to perform crud on other user's favorites except for admins. 
-    - [ ] Create slide show and practice demo.
+    - [x] Create jest tests for authors route - Valid RU based on roles. Unauthorized access to perform updates.
+    - [x] Create jest tests for favorites route - Valid CRUD based on roles. Unauthorized access to perform crud on other user's favorites except for admins. 
+    - [x] Create slide show and practice demo.
 - Week 9 - Submit and present  
     
     
 ### Self Evaluation
 - What worked
+    - Lots of great examples from classwork and assignments to get framework started - including auth and error handling middleware.
+    - Initial project design helped with building out the models, daos, and routes. I referred to my README often to help keep me from scope creep.
+    - Using mongosh to try out complex queries, having MongoDB Compass to visually see the collections and documents.
+    - Using Postman to test out all the routes.
+    - Jest examples from assignments really helped create my tests.
 - What didn't work
+    - MongoDB queries are harder than I thought, it was difficult to get nested searches and lookups working correctly. I had to use mongosh to test out portions and put it together. The documentation was also not as easy to find as SQL queries.
+    - The author and book co-dependency was a little hard to design. Ideally, I should have had ways to get books from authors and authors from books. Since I didn't start off with that design, the API is not as flexible as it should be be.  
+    - Could not figure out a good way to uniquely identify an author. 
+    - Could not get my git workflow yaml to work with pull requests. 
 - Lessons learnt
+   - MongoDB collections are not similar to relational databases, it would probably have been better to have authors collections within book collections.
+   - Got lot more practice with MongoDB and Jest.
+   - I see the value now in creating Jest tests earlier during development. It ended up being a lot of work to create all the tests at the end. I caught a couple of bugs through my tests.
+   - Incorporating an external API would be useful to check ISBN or author information.
+   - It was a great experience building the APIs end to end - gives me more confidence in designing and implementing more node.js applications.
+
